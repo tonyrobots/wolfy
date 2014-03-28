@@ -1,0 +1,37 @@
+<h1>Listing players</h1>
+
+<table>
+  <thead>
+    <tr>
+	  <th>User ID<th>
+	  <th>Game</th>
+      <th>Alias</th>
+      <th>Role</th>
+      <th>Alive</th>
+      <th>Last move</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @players.each do |player| %>
+      <tr>
+		<td><%= player.user_id %></td>
+        <td><%= player.game_id %></td>
+        <td><%= player.alias %></td>
+        <td><%= player.role %></td>
+        <td><%= player.alive %></td>
+        <td><%= player.last_move %></td>
+        <td><%= link_to 'Show', player %></td>
+        <td><%= link_to 'Edit', edit_player_path(player) %></td>
+        <td><%= link_to 'Destroy', player, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Player', new_player_path %>

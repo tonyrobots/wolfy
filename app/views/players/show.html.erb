@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Alias:</strong>
+  <%= @player.alias %>
+</p>
+
+<p>
+  <strong>Role:</strong>
+  <%= @player.role %>
+</p>
+
+<p>
+  <strong>Alive:</strong>
+  <%= @player.alive %>
+</p>
+
+<p>
+  <strong>Last move:</strong>
+  <%= @player.last_move %>
+</p>
+
+<%= link_to 'Edit', edit_player_path(@player) %> |
+<%= link_to 'Back', players_path %>

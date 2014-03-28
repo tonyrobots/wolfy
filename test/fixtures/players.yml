@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  alias: MyString
+  role: MyString
+  alive: false
+  last_move: MyString
+
+two:
+  alias: MyString
+  role: MyString
+  alive: false
+  last_move: MyString

@@ -1,0 +1,31 @@
+<h1>Werewolf Games</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Turn</th>
+      <th>State</th>
+      <th>Players</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @games.each do |game| %>
+      <tr>
+        <td><%= link_to game.name, game %></td>
+        <td><%= game.turn %></td>
+        <td><%= game.state %></td>
+        <td><%= game.players.count %></td>      
+        <td><%= link_to 'Edit', edit_game_path(game) %></td>
+        <td><%= link_to 'Destroy', game, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Game', new_game_path %>

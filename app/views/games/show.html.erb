@@ -1,0 +1,32 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <h2><%= @game.name %></h2>
+  
+</p>
+
+<p>
+  <strong>Turn:</strong>
+  <%= @game.turn %>
+</p>
+
+<p>
+  <strong>State:</strong>
+  <%= @game.state %>
+</p>
+
+<p>
+<h3>Players:</h3>
+<% for player in @game.players %>
+   <%= player.user.email %> - <%= player.alias %> - <%= player.role %><br />
+<% end %>
+</p>
+
+<%= if (current_user and not @game.started?)
+	  link_to 'Join Game', join_game_path(:id => @game)
+	end %>
+
+<%= if (current_user and current_user.id == @game.creator_id and not @game.started?)
+	  link_to 'Edit', edit_game_path(@game) 
+	end %> |
+<%= link_to 'Back', games_path %>
