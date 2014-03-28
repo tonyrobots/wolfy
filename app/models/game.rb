@@ -1,7 +1,8 @@
 class Game < ActiveRecord::Base
   has_many :players
   has_many :users, through: :players
-  has_one :creator  
+  has_one :creator
+  has_many :event_logs
   
   def advance_turn
    self.turn += 1
@@ -33,18 +34,13 @@ class Game < ActiveRecord::Base
     # this is gross. make it nicer!
     self.players.shuffle.each_with_index do |player, index|
       if index < werewolf_count
-        #move this logging to role definition function in player class
-        #@log.add "assigned role 'werewolf' to #{player.name}"
         player.assign_role("werewolf")
       elsif index < werewolf_count + seer_count
-        #@log.add "assigned role 'seer' to #{player.name}"
         player.assign_role("seer")
       elsif index < werewolf_count + seer_count + angel_count
-        #@log.add "assigned role 'angel' to #{player.name}"
         player.assign_role("angel")
       else
         player.assign_role("villager")
-        #@log.add "assigned role 'villager' to #{player.name}"
       end
     end
   end
@@ -58,6 +54,8 @@ class Game < ActiveRecord::Base
     #@log.add("Game has started.")
     self.turn = 0
     self.advance_turn
+    self.log_event "Game #{self.name} started!"
+    self.save
   end
   
   def started?
@@ -75,5 +73,8 @@ class Game < ActiveRecord::Base
       return FALSE
     end
   end
-  
+    
+  def log_event(text)
+    EventLog.create(:game_id => self.id, :text => text)
+  end
 end

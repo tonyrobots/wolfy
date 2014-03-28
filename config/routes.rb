@@ -1,6 +1,8 @@
 Werewolf::Application.routes.draw do
   resources :players
-  resources :games
+  resources :games do
+    resources :event_logs, :as => 'logs', :only=>[:index]
+  end
   get 'games/:id/join' => 'games#join', as: "join_game"
   get 'games/:id/start' => 'games#start', as: "start_game"
 

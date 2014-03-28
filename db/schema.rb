@@ -11,7 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140206043348) do
+ActiveRecord::Schema.define(version: 20140328225504) do
+
+  create_table "event_logs", force: true do |t|
+    t.integer  "game_id"
+    t.text     "text"
+    t.integer  "actor"
+    t.integer  "target"
+    t.string   "action"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "event_logs", ["game_id"], name: "index_event_logs_on_game_id"
 
   create_table "games", force: true do |t|
     t.string   "name"
@@ -53,5 +65,16 @@ ActiveRecord::Schema.define(version: 20140206043348) do
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+
+  create_table "votes", force: true do |t|
+    t.integer  "game_id"
+    t.integer  "voter_id"
+    t.integer  "votee_id"
+    t.integer  "turn"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "votes", ["game_id"], name: "index_votes_on_game_id"
 
 end
