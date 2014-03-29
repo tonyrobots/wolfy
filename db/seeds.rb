@@ -14,9 +14,9 @@ User.create(email: "tonyzito@gmail.com", password: "coffee")
   User.create(email: "email#{i}@test.com", password: "test")
 end
 
-Game.create(name: "test", creator_id: 1)
+game = Game.create(name: "New Game", creator_id: 1)
 
 10.times do |i|
-  Player.create(alias: "player-#{i+1}", game_id: 7, user_id: "#{i+1}")
+  Player.create(alias: Faker::Name.name, game_id: game.id, user_id: "#{i+1}")
 end
   
