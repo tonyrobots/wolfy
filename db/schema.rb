@@ -11,7 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140328225504) do
+ActiveRecord::Schema.define(version: 20140328232718) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "event_logs", force: true do |t|
     t.integer  "game_id"
@@ -23,7 +26,7 @@ ActiveRecord::Schema.define(version: 20140328225504) do
     t.datetime "updated_at"
   end
 
-  add_index "event_logs", ["game_id"], name: "index_event_logs_on_game_id"
+  add_index "event_logs", ["game_id"], name: "index_event_logs_on_game_id", using: :btree
 
   create_table "games", force: true do |t|
     t.string   "name"
@@ -33,6 +36,17 @@ ActiveRecord::Schema.define(version: 20140328225504) do
     t.datetime "updated_at"
     t.integer  "creator_id"
   end
+
+  create_table "messages", force: true do |t|
+    t.integer  "game_id"
+    t.integer  "player_id"
+    t.text     "content"
+    t.text     "recipient_list"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "messages", ["game_id"], name: "index_messages_on_game_id", using: :btree
 
   create_table "players", force: true do |t|
     t.string   "alias"
@@ -45,8 +59,8 @@ ActiveRecord::Schema.define(version: 20140328225504) do
     t.integer  "game_id"
   end
 
-  add_index "players", ["game_id"], name: "index_players_on_game_id"
-  add_index "players", ["user_id"], name: "index_players_on_user_id"
+  add_index "players", ["game_id"], name: "index_players_on_game_id", using: :btree
+  add_index "players", ["user_id"], name: "index_players_on_user_id", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false
@@ -63,8 +77,8 @@ ActiveRecord::Schema.define(version: 20140328225504) do
     t.datetime "updated_at"
   end
 
-  add_index "users", ["email"], name: "index_users_on_email", unique: true
-  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
   create_table "votes", force: true do |t|
     t.integer  "game_id"
@@ -75,6 +89,6 @@ ActiveRecord::Schema.define(version: 20140328225504) do
     t.datetime "updated_at"
   end
 
-  add_index "votes", ["game_id"], name: "index_votes_on_game_id"
+  add_index "votes", ["game_id"], name: "index_votes_on_game_id", using: :btree
 
 end
