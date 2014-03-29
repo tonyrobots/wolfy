@@ -4,7 +4,7 @@ class CreateMessages < ActiveRecord::Migration
       t.integer :game_id
       t.integer :player_id
       t.text :content
-      t.array :recipient_list
+      t.text :recipient_list
 
       t.timestamps
     end
