@@ -46,16 +46,16 @@ class Game < ActiveRecord::Base
   end
   
   def start
-    if self.players.count < 7 
+    if players.count < 7 
       #TODO Fix this. Maybe need to move to controller?
       puts "too few players."
     end
-    self.assign_roles
+    assign_roles
     #@log.add("Game has started.")
-    self.turn = 0
-    self.advance_turn
-    self.log_event "Game #{self.name} started!"
-    self.save
+    turn = 0
+    advance_turn
+    log_event "Game #{self.name} started!"
+    save
   end
   
   def started?
