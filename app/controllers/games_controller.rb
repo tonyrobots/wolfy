@@ -52,6 +52,9 @@ class GamesController < ApplicationController
   # GET /games/1/edit
   def edit
   end
+  
+  def vote
+  end
 
   # POST /games
   # POST /games.json

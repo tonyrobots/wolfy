@@ -1,8 +1,9 @@
 class Game < ActiveRecord::Base
   has_many :players
   has_many :users, through: :players
-  has_one :creator
+  belongs_to :creator, :class_name => 'User', :foreign_key => 'creator_id'
   has_many :event_logs
+  has_many :votes
   
   def advance_turn
    self.turn += 1
