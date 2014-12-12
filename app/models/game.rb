@@ -4,6 +4,7 @@ class Game < ActiveRecord::Base
   belongs_to :creator, :class_name => 'User', :foreign_key => 'creator_id'
   has_many :event_logs
   has_many :votes
+  has_many :comments
   
   def advance_turn
    self.turn += 1
@@ -46,16 +47,19 @@ class Game < ActiveRecord::Base
   end
   
   def start
-    if players.count < 7 
+    if self.started?
+      return
+    elsif players.count < 7 
       #TODO Fix this. Maybe need to move to controller?
-      puts "too few players."
+      flash[:warning] = "too few players."
+    else
+      assign_roles
+      #@log.add("Game has started.")
+      turn = 0
+      advance_turn
+      log_event "Game #{self.name} started!"
+      save
     end
-    assign_roles
-    #@log.add("Game has started.")
-    turn = 0
-    advance_turn
-    log_event "Game #{self.name} started!"
-    save
   end
   
   def started?
