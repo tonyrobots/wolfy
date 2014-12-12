@@ -79,8 +79,8 @@ class Game < ActiveRecord::Base
   end
   
   def count_votes
-    #votes_needed = self.players.alive.count / 2 + 1
-    votes_needed = 1
+    votes_needed = self.players.living.count / 2 + 1
+    #votes_needed = 1
     puts "counting votes..."
     for player in self.players.living
       if player.votes_for.count >= votes_needed
