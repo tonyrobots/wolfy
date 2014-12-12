@@ -3,56 +3,62 @@
   
 </p>
 
-<p>
-  <strong>Turn:</strong>
-  <%= @game.turn %>
-</p>
 
 <p>
-  <strong>It is <%= @game.state %></strong>
+  <strong>
+	  <% if @game.turn > 0 %>
+	  Turn: <%= @game.turn %>.  It is <%= @game.state %>
+	  <% else %>
+	    Game has not yet started.
+	  <% end %>
+	</strong>
 </p>
 <div class="row">
-<div class="six columns">	
-	<p>
-	<h3>Players:</h3>
-	<% for player in @game.players.living %>
-		<div class="player inline">
-			<% unless player == current_player(@game) %>
-		   <div class="medium primary btn">
-				<% if !@votee or @votee.id != player.id %>
-				<%= link_to "Vote", vote_path(votee_id:player.id), class:"medium primary btn" %>
-				<% else %>
-				remove vote
+	<div class="six columns">	
+		<p>
+		<h3>Players:</h3>
+		<table class="table">
+		<% for player in @game.players.living %>
+				<tr><td>			
+				<% unless player == current_player(@game) %>
+				   <div class="medium primary btn">
+						<% if !@votee or @votee.id != player.id %>
+						<%= link_to "Vote", vote_path(votee_id:player.id), class:"medium primary btn" %>
+						<% else %>
+						remove vote
+						<% end %>
+					</div>
 				<% end %>
-			</div>
-			<% end %>
-			<%= "* " if player == current_player(@game)%><%= player.alias %> (<%= player.role %>) <br />
-		</div>
-	<% end %>
-	</p>
-	<% if @game.players.dead %>
-		<p><h4>Dead:</h4>
-		<% for player in @game.players.dead %>
-			<div class="player inline">
-				<%= "* " if player == current_player(@game)%><%= player.alias %> (<%= player.role %>) <br />
-			</div>
+					<%= " You! " if player == current_player(@game)%>
+				</td>
+				<td><%= player.alias %> (<%= player.role %>)</td>
+			</tr>
 		<% end %>
-	<%end%>
-</div>
-<div class="six columns">	
-	<h3>Chat:</h3>
-	 <div class="panel panel-default" id="comments">
-		 <%= render 'comments/form' %>  
-	    <div class="panel-body scrollable">
-	      <ul class="media-list">
-	        <%= render @comments %>
-	      </ul>
-	    </div>
-	  </div>
-</div>
+	</table>
+		</p>
+		<% if @game.players.dead.count > 0 %>
+			<p><h4>Dead:</h4>
+			<% for player in @game.players.dead %>
+				<div class="player inline">
+					<%= "* " if player == current_player(@game)%><%= player.alias %> (<%= player.role  %>) <br />
+				</div>
+			<% end %>
+		<%end%>
+	</div>
+	<div class="six columns">	
+		<h3>Chat:</h3>
+		 <div class="panel panel-default" id="comments">
+			 <%= render 'comments/form' %>  
+		    <div class="panel-body scrollable">
+		      <ul class="media-list">
+		        <%= render @comments %>
+		      </ul>
+		    </div>
+		  </div>
+	</div>
 </div>
 
-<% if (current_user and not @game.started?) %>
+<% if (current_user and not @game.started? and not current_user.is_playing?(@game)) %>
 	 <%= link_to 'Join Game', join_game_path(:id => @game) %> |
 <% end %>
 

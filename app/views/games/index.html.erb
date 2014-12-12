@@ -9,18 +9,20 @@
       <th>Players</th>
       <th></th>
       <th></th>
+		<th></th>
     </tr>
   </thead>
 
   <tbody>
     <% @games.each do |game| %>
       <tr>
-        <td><%= link_to game.name, game %></td>
+        <td><% if current_user.try(:is_playing?,game)%><%= link_to game.name, game %><% else %><%= game.name %><% end %></td>
         <td><%= game.turn %></td>
         <td><%= game.state %></td>
-        <td><%= game.players.count %></td>      
-        <td><%= link_to 'Edit', edit_game_path(game) %></td>
-        <td><%= link_to 'Destroy', game, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= game.players.count %></td>
+		  <td><% unless current_user.try(:is_playing?,game)%><%= link_to "Join Game", join_game_path(:id => game.id)%><% end %>
+        <td><% if current_user == game.creator %><%= link_to 'Edit', edit_game_path(game) %></td><%end%>
+        <td><% if current_user == game.creator %><%= link_to 'Delete', game, method: :delete, data: { confirm: 'Are you sure?' } %><%end%></td>
       </tr>
     <% end %>
   </tbody>
@@ -28,4 +30,4 @@
 
 <br>
 
-<%= link_to 'New Game', new_game_path %>
+<%= link_to 'Create a Game', new_game_path %>

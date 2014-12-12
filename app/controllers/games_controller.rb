@@ -1,10 +1,10 @@
 class GamesController < ApplicationController
-  before_action :set_game, only: [:show, :edit, :update, :destroy, :start, :vote]
+  before_action :set_game, except: [:index, :new, :create]
   before_filter :authenticate_user!, except: [:index]
+  before_filter :players_only, only:[:show]
   
   def join
-    set_game
-    if @game.turn
+    if @game.turn > 0
       logger.error "Attempt to join started game #{@game.id}"
       redirect_to game_url, :alert => "Too late to join that game!"
     elsif !current_user
@@ -14,7 +14,12 @@ class GamesController < ApplicationController
       logger.error "User #{current_user.id} tried to join game #{@game.id} twice."
       redirect_to game_url, :alert => "You are already in that game!"
     else
-      @player = @game.players.build(:user => current_user)
+      if params[:alias].present?
+        player_alias = params[:alias].strip
+      else
+        player_alias = "Player #{@game.players.count + 1}"
+      end
+      @player = @game.players.build(:user => current_user, :alias => player_alias)
       respond_to do |format|
         if @player.save
           format.html { redirect_to @game, notice: 'Player was successfully created.' }
@@ -57,8 +62,12 @@ class GamesController < ApplicationController
   end
   
   def vote
-    votee = Player.find(params[:votee_id])
-    current_player(@game).vote_for(votee)
+    if @game.started? and @game.is_day?
+      votee = Player.find(params[:votee_id])
+      current_player(@game).vote_for(votee)
+    else
+      flash.alert = "You can't vote now!"
+    end
     redirect_to @game
   end
 
@@ -67,7 +76,8 @@ class GamesController < ApplicationController
   def create
     @game = Game.new(game_params)
     @game.creator_id = current_user.id
-
+    #TODO creator should automatically join game?
+    
     respond_to do |format|
       if @game.save
         format.html { redirect_to @game, notice: 'Game was successfully created.' }
@@ -112,5 +122,13 @@ class GamesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def game_params
       params.require(:game).permit(:name, :turn, :state)
+    end
+    
+    def players_only
+      set_game
+      unless current_user.is_playing?(@game)
+        flash.alert = "You must be a player in a game to view it."
+        redirect_to games_path
+      end
     end
 end

@@ -1,10 +1,10 @@
 class Game < ActiveRecord::Base
-  has_many :players
+  has_many :players, dependent: :destroy
   has_many :users, through: :players
   belongs_to :creator, :class_name => 'User', :foreign_key => 'creator_id'
-  has_many :event_logs
-  has_many :votes
-  has_many :comments
+  has_many :event_logs, dependent: :destroy
+  has_many :votes, dependent: :destroy
+  has_many :comments, dependent: :destroy
   
   def advance_turn
    self.turn += 1

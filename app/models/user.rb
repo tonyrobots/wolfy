@@ -6,4 +6,13 @@ class User < ActiveRecord::Base
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
+         
+  def is_playing?(game)
+    game.users.include? self
+  end
+  
+  def join(game)
+    game.users << self
+  end
+  
 end
