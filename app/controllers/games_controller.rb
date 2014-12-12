@@ -40,8 +40,9 @@ class GamesController < ApplicationController
   # GET /games/1
   # GET /games/1.json
   def show
-    #@players = @game.players
     @votee = current_player(@game).voted_for
+    @comment = Comment.new
+    @comments = Comment.order('created_at DESC')
   end
 
   # GET /games/new

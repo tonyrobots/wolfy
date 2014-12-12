@@ -38,7 +38,17 @@
 		</div>
 	<% end %>
 <%end%>
+<%= render 'comments/form' %>
 
+ <div class="panel panel-default" id="comments">
+    <div class="panel-body">
+      <ul class="media-list">
+        <%= render @comments %>
+      </ul>
+    </div>
+  </div>
+  
+  
 <% if (current_user and not @game.started?) %>
 	 <%= link_to 'Join Game', join_game_path(:id => @game) %> |
 <% end %>

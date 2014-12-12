@@ -3,6 +3,7 @@ class Player < ActiveRecord::Base
   belongs_to :game
   has_many :votes, foreign_key: :voter_id
   has_many :votes_for, class_name: 'Vote', foreign_key: :votee_id
+  has_many :comments, dependent: :delete_all
   
   scope :living, -> { where(alive: true) }
   scope :dead, -> { where(alive: false) }
