@@ -42,7 +42,7 @@ class GamesController < ApplicationController
   def show
     @votee = current_player(@game).voted_for
     @comment = Comment.new
-    @comments = Comment.order('created_at DESC')
+    @comments = Comment.where(game_id:@game.id).order('created_at ASC')
   end
 
   # GET /games/new

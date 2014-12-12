@@ -1,7 +1,6 @@
 <li class="media comment">
   <div class="media-body">
-    <h4 class="media-heading"><%= comment.player.alias %>:
-      <small class="text-muted">[at <%= comment.created_at.strftime('%-d %B %Y, %H:%M:%S') %>]</small></h4>
-    <p><%= comment.body %></p>
+    <strong><%= comment.player.alias %>:</strong> <%= comment.body %><br />
+      <small class="text-muted">[at <%= comment.created_at.strftime('%-d %B %Y, %H:%M:%S') %>]</small>
   </div>
 </li>

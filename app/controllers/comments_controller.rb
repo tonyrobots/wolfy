@@ -1,7 +1,7 @@
 class CommentsController < ApplicationController
   def new
     @comment = Comment.new
-    @comments = Comment.order('created_at DESC')
+    @comments = Comment.order('created_at ASC')
   end
  
   def create
@@ -9,6 +9,7 @@ class CommentsController < ApplicationController
       if current_user
         @game = Game.find(params[:game_id])
         @comment = current_player(@game).comments.build(comment_params)
+        @comment.game_id = @game.id
         if @comment.save
           flash.now[:success] = 'Your comment was successfully posted!'
         else

@@ -3,10 +3,8 @@
     <div class="form-group">
       <%= f.label :body, 'Enter your comment:' %>
 		<%= hidden_field_tag :game_id, @game.id %>
-      <%= f.text_area :body, rows: 3, class: 'form-control', required: true, maxlength: 2000 %>
+      <%= f.text_field :body, class: 'form-control', required: true, size:50 %>
       <small class="label label-warning">Cannot be blank or contain more than 2000 characters.</small>
     </div>
- 
-    <%= f.submit 'Post', class: 'btn btn-primary btn-lg' %>
-  <% end %>
+   <% end %>
 </div>
