@@ -4,7 +4,9 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   
   def current_player(game)
-    game.players.where(user_id:current_user.id).last
+    if current_user
+      game.players.where(user_id:current_user.id).last
+    end
   end
   helper_method :current_player
   

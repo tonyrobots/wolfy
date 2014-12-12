@@ -1,5 +1,6 @@
 class GamesController < ApplicationController
   before_action :set_game, only: [:show, :edit, :update, :destroy, :start, :vote]
+  before_filter :authenticate_user!, except: [:index]
   
   def join
     set_game
