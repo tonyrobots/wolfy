@@ -1,6 +1,12 @@
-<% if @comment.new_record? %>
-  alert('Your comment cannot be saved.');
-<% else %>
-  $('#comments').find('.media-list').append('<%= j render @comment %>');
+publisher = client.publish(gon.channel, {
+  message: '<%= j render @comment %>'
+});
+
+publisher.callback(function() {
   $('#comment_body').val('');
-<% end %>
+  $('#new_comment').find("input[type='submit']").val('Submit').prop('disabled', false)
+});
+ 
+publisher.errback(function() {
+  alert('There was an error while posting your comment.');
+});

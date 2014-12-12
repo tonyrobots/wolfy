@@ -30,7 +30,10 @@ gem 'devise'
 gem 'thin'
 gem 'pg'
 gem 'faker'
+
+# chat
 gem 'faye-rails'
+gem 'gon'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.

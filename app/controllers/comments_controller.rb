@@ -1,13 +1,14 @@
 class CommentsController < ApplicationController
   def new
     @comment = Comment.new
-    @comments = Comment.order('created_at ASC')
+    @comments = Comment.order('created_at DESC')
   end
  
   def create
     respond_to do |format|
       if current_user
         @game = Game.find(params[:game_id])
+        gon.channel = "/channel-#{current_player(@game).id}"
         @comment = current_player(@game).comments.build(comment_params)
         @comment.game_id = @game.id
         if @comment.save

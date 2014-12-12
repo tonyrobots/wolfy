@@ -2,21 +2,23 @@
 <html>
 <head>
   <title>Werewolf</title>
+  <%= include_gon %>
   <%= stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => true %>
   <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
   <%= csrf_meta_tags %>
   <%= favicon_link_tag 'favicon.ico' %>
 </head>
 <body>
-<div class="one column"></div>
-<div class="eight columns">	
-  <%= render 'layouts/user_widget' %>
-  <hr>
-  <p id="notice"><%= notice %></p>
+<div class="row">
+	<div class="twelve columns">	
+	  <%= render 'layouts/user_widget' %>
+	  <hr>
+	  <p id="notice"><%= notice %></p>
 
-  <p class="alert"><%= alert %></p>
+	  <p class="alert"><%= alert %></p>
 
-  <%= yield %>
+	  <%= yield %>
+	</div>
 </div>
 </body>
 </html>
