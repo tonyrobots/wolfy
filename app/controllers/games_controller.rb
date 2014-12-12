@@ -1,5 +1,5 @@
 class GamesController < ApplicationController
-  before_action :set_game, only: [:show, :edit, :update, :destroy]
+  before_action :set_game, only: [:show, :edit, :update, :destroy, :start, :vote]
   
   def join
     set_game
@@ -27,7 +27,6 @@ class GamesController < ApplicationController
   end
   
   def start
-    set_game
     @game.start
     render "games/show"
   end
@@ -41,7 +40,8 @@ class GamesController < ApplicationController
   # GET /games/1
   # GET /games/1.json
   def show
-    @players = @game.players
+    #@players = @game.players
+    @votee = current_player(@game).voted_for
   end
 
   # GET /games/new
@@ -54,6 +54,9 @@ class GamesController < ApplicationController
   end
   
   def vote
+    votee = Player.find(params[:votee_id])
+    current_player(@game).vote_for(votee)
+    redirect_to @game
   end
 
   # POST /games
@@ -102,7 +105,7 @@ class GamesController < ApplicationController
     def set_game
       @game = Game.find(params[:id])
     end
-    
+        
     # Never trust parameters from the scary internet, only allow the white list through.
     def game_params
       params.require(:game).permit(:name, :turn, :state)

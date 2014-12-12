@@ -5,6 +5,7 @@ Werewolf::Application.routes.draw do
   end
   get 'games/:id/join' => 'games#join', as: "join_game"
   get 'games/:id/start' => 'games#start', as: "start_game"
+  get 'games/:id/vote/:votee_id' => 'games#vote', as: "vote"
 
   devise_for :users
   root :to => "games#index"

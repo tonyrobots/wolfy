@@ -10,15 +10,14 @@ class Game < ActiveRecord::Base
     if is_day?
       #@vote_counter = Vote_counter.new(self.player_list)
       self.state = "day"
-      self.save
     elsif is_night?
       self.state = "night"
-      for player in @players
+      for player in self.players
         player.last_move = ""
       end
-      self.save
     end
-    #@log.add "It is now turn #{self.turn} (#{self.state})."
+    self.save
+    log_event "It is now turn #{self.turn} (#{self.state})."
   end
   
   def assign_roles
@@ -60,7 +59,7 @@ class Game < ActiveRecord::Base
   end
   
   def started?
-    self.turn
+    self.turn > 0
   end
   
   def is_day?
@@ -74,7 +73,24 @@ class Game < ActiveRecord::Base
       return FALSE
     end
   end
-    
+  
+  def end_turn
+    advance_turn
+  end
+  
+  def count_votes
+    #votes_needed = self.players.alive.count / 2 + 1
+    votes_needed = 1
+    puts "counting votes..."
+    for player in self.players.living
+      if player.votes_for.count >= votes_needed
+        player.lynch
+        end_turn
+        return
+      end
+    end
+  end 
+  
   def log_event(text)
     EventLog.create(:game_id => self.id, :text => text)
   end
