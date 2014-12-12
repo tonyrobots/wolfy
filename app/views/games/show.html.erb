@@ -20,16 +20,7 @@
 		<table class="table">
 		<% for player in @game.players.living %>
 				<tr><td>			
-				<% unless player == current_player(@game) %>
-				   <div class="medium primary btn">
-						<% if !@votee or @votee.id != player.id %>
-						<%= link_to "Vote", vote_path(votee_id:player.id), class:"medium primary btn" %>
-						<% else %>
-						remove vote
-						<% end %>
-					</div>
-				<% end %>
-					<%= " You! " if player == current_player(@game)%>
+					<%= render "games/action", player: player%>
 				</td>
 				<td><%= player.alias %> (<%= player.role %>)</td>
 			</tr>

@@ -47,12 +47,7 @@ class Game < ActiveRecord::Base
   end
   
   def start
-    if self.started?
-      return
-    elsif players.count < 7 
-      #TODO Fix this. Maybe need to move to controller?
-      flash[:warning] = "too few players."
-    else
+    unless self.started?
       assign_roles
       #@log.add("Game has started.")
       turn = 0

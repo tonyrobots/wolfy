@@ -33,8 +33,14 @@ class GamesController < ApplicationController
   end
   
   def start
-    @game.start
-    render "games/show"
+    min_players = 7
+    if @game.players.count < min_players 
+      flash.alert = "Oops! You need at least #{min_players} players to start."
+    else
+      @game.start
+      flash.notice = "The game has begun!"
+    end
+    redirect_to @game
   end
 
   # GET /games
