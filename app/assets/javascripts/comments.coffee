@@ -15,9 +15,18 @@ jQuery ->
   try
     client.unsubscribe gon.channel
   catch
-    console?.log "Can't unsubscribe."
+    console?.log "Can't unsubscribe from broadcast channel."
+	 
+  try
+   client.unsubscribe gon.private_channel
+  catch
+   console?.log "Can't unsubscribe from private channel."
+	 
 
   client.subscribe gon.channel, (payload) ->
+    $('#comments').find('.media-list').prepend(payload.message) if payload.message
+  
+  client.subscribe gon.private_channel, (payload) ->
     $('#comments').find('.media-list').prepend(payload.message) if payload.message
 
 	 publisher = client.publish(gon.channel,

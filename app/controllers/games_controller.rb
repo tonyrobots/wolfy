@@ -59,8 +59,9 @@ class GamesController < ApplicationController
     @comment = Comment.new
     @comments = Comment.where(game_id:@game.id).order('created_at DESC')
     gon.channel = "/channel-#{@game.id}"
+    gon.private_channel = "/channel-p-#{current_player(@game).id}"
     if flash[:gon_msg]
-      gon.msg = flash[:gon_msg]
+      #gon.msg = flash[:gon_msg]
     end
   end
 
