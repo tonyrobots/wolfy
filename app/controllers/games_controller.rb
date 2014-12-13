@@ -35,10 +35,10 @@ class GamesController < ApplicationController
   def start
     min_players = 7
     if @game.players.count < min_players 
-      flash.alert = "Oops! You need at least #{min_players} players to start."
+      flash[:warning] = "Oops! You need at least #{min_players} players to start."
     else
       @game.start
-      flash.notice = "The game has begun!"
+      flash[:success] = "The game has begun!"
     end
     redirect_to @game
   end
@@ -46,7 +46,10 @@ class GamesController < ApplicationController
   # GET /games
   # GET /games.json
   def index
-    @games = Game.all
+    @open_games = Game.where(turn:0)
+    if current_user
+      @user_games = current_user.games
+    end
   end
 
   # GET /games/1
@@ -56,6 +59,9 @@ class GamesController < ApplicationController
     @comment = Comment.new
     @comments = Comment.where(game_id:@game.id).order('created_at DESC')
     gon.channel = "/channel-#{@game.id}"
+    if flash[:gon_msg]
+      gon.msg = flash[:gon_msg]
+    end
   end
 
   # GET /games/new
@@ -70,11 +76,14 @@ class GamesController < ApplicationController
   def vote
     if @game.started? and @game.is_day?
       votee = Player.find(params[:votee_id])
-      current_player(@game).vote_for(votee)
+      voter = current_player(@game)
+      voter.vote_for(votee)
+      msg = "#{voter.alias} voted for #{votee.alias}."
+      add_message(@game, msg)
     else
       flash.alert = "You can't vote now!"
     end
-    redirect_to @game
+    redirect_to @game, :flash => { :gon_msg => msg }
   end
 
   # POST /games

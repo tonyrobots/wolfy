@@ -1,11 +1,36 @@
-<h1>Werewolf Games</h1>
+<%= link_to 'Create a Game', new_game_path, class:"btn btn-primary pull-right" %>
 
-<table class="table striped">
+
+<%if @user_games %>
+<h1>Your Games</h1>
+
+<table class="table table-striped">
   <thead>
     <tr>
       <th>Name</th>
+      <th>Players</th>
       <th>Turn</th>
-      <th>State</th>
+
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @user_games.each do |game| %>
+      <tr>
+        <td><% if current_user.try(:is_playing?,game)%><%= link_to game.name, game %><% else %><%= game.name %><% end %></td>
+        <td><%= game.players.count %></td>
+        <td><%= game.turn > 0? "#{game.turn} (#{game.state})" : "Unstarted" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<% end %>
+<h1>Open Games</h1>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Name</th>
       <th>Players</th>
       <th></th>
       <th></th>
@@ -14,11 +39,9 @@
   </thead>
 
   <tbody>
-    <% @games.each do |game| %>
+    <% @open_games.each do |game| %>
       <tr>
         <td><% if current_user.try(:is_playing?,game)%><%= link_to game.name, game %><% else %><%= game.name %><% end %></td>
-        <td><%= game.turn %></td>
-        <td><%= game.state %></td>
         <td><%= game.players.count %></td>
 		  <td><% unless current_user.try(:is_playing?,game)%><%= link_to "Join Game", join_game_path(:id => game.id)%><% end %>
         <td><% if current_user == game.creator %><%= link_to 'Edit', edit_game_path(game) %></td><%end%>
@@ -30,4 +53,3 @@
 
 <br>
 
-<%= link_to 'Create a Game', new_game_path %>

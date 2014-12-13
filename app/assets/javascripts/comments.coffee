@@ -1,11 +1,12 @@
 window.client = new Faye.Client('/faye')
- 
+
 client.addExtension {
   outgoing: (message, callback) ->
     message.ext = message.ext || {}
     message.ext.csrfToken = $('meta[name=csrf-token]').attr('content')
     callback(message)
 }
+
 
 jQuery ->
   $('#new_comment').submit ->
@@ -18,3 +19,9 @@ jQuery ->
 
   client.subscribe gon.channel, (payload) ->
     $('#comments').find('.media-list').prepend(payload.message) if payload.message
+
+	 publisher = client.publish(gon.channel,
+	   message: gon.msg
+	 )
+
+		

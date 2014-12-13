@@ -10,4 +10,9 @@ class ApplicationController < ActionController::Base
   end
   helper_method :current_player
   
+  def add_message(game, msg)
+    @comment = game.comments.build(game_id:game.id, body:msg)
+    @comment.save
+  end
+  
 end

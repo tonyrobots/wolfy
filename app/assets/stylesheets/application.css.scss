@@ -12,13 +12,26 @@
  *= require_tree .
  */
 
-@import "bootstrap-sprockets"
-@import "bootstrap"
+$brand-primary: #742809;
+$border-radius-base:        0px;
+$border-radius-large:       0px;
+$border-radius-small:       0px;
 
-.player
-	padding: 5px
 
-.scrollable
-	height: 300px
-	width: 100%
-	overflow: auto
+@import "bootstrap-sprockets";
+@import "bootstrap";
+
+.player {
+	padding: 5px;
+}
+
+.scrollable {
+	height:300px;
+	width:100%;
+	overflow: auto;
+}
+
+.system-comment {
+	color:red;
+	font-weight:bold;
+}

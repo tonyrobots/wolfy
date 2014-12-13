@@ -1,13 +1,11 @@
 <%if @game.started? %>
 	<% if @game.is_day? %>
 		<% unless player == current_player(@game) %>
-		   <div class="medium primary btn">
 				<% if !@votee or @votee.id != player.id %>
-				<%= link_to "Vote", vote_path(votee_id:player.id), class:"medium primary btn" %>
+				<%= link_to "Vote", vote_path(votee_id:player.id), class:"btn-default btn vote" %>
 				<% else %>
 				remove vote
 				<% end %>
-			</div>
 		<% end %>
 		<%= " You! " if player == current_player(@game)%>
 	<% else %>

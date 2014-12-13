@@ -1,6 +1,12 @@
 <li class="media comment">
   <div class="media-body">
-    <strong><%= comment.player.alias %>:</strong> <%= comment.body %><br />
+    <strong>
+		<% if comment.player %>
+			<% type='player-comment' %>
+		 	<%= comment.player.alias %>:
+		<% else type='system-comment'%>
+		<% end %></strong> 
+		<span class="<%=type%>"><%= comment.body %></span><br />
       <small class="text-muted">[at <%= comment.created_at.strftime('%-d %B %Y, %H:%M:%S') %>]</small>
   </div>
 </li>

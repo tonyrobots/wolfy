@@ -13,9 +13,12 @@
 	      <div class="row">
 	        <div class="col-xs-12">
 				  <%= render 'layouts/user_widget' %>
+				  <hr />
 	          <% flash.each do |name, msg| -%>
-	            <%= content_tag :div, msg, class: "alert alert-dismissible alert-#{name}" %>
-	          <% end -%>
+				 <div class="alert alert-dismissible <%= "alert-#{name}"%>">
+				  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+	            <%= msg %>
+	          <% end %>
 	        </div>
 	      </div>
 	      <div class="row">
