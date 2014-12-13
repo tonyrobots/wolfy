@@ -12,25 +12,26 @@ class ApplicationController < ActionController::Base
   
   def add_message(game, msg, player = false)
     @comment = game.comments.build(game_id:game.id, body:msg)
-    puts "GARGAMEL"
     @comment.save
     if player
       channel = "channel-p-#{player.id}"
     else
       channel = "/channel-#{game.id}"
     end
-    message = "#{msg}<br/>"
     payload = { message: render_to_string(@comment)}
     broadcast(channel, payload)
   end
   
   def broadcast(channel, payload)
-    # if you have problems don't forget about event machine start
-    client = Faye::Client.new("#{request.base_url}/faye")
-    client.publish(channel, payload )
+    # if you have problems look into event machine start
+    base_url = request ? request.base_url : "http://localhost:7777"
+    #client = Faye::Client.new("#{base_url}/faye")
+    #client.publish(channel, payload )
+    bayeux.get_client.publish(channel, payload )
   end
   
   def commentify_system_message(game, msg)
+    #abandoned for now
     comment = Comment.new
   end
   

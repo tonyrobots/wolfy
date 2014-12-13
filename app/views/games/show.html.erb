@@ -1,3 +1,4 @@
+<div class="game">
 <p>
   <h2><%= @game.name %></h2>
   
@@ -7,7 +8,7 @@
 <p>
   <strong>
 	  <% if @game.turn > 0 %>
-	  Turn: <%= @game.turn %>.  It is <%= @game.state %>
+	  Turn: <%= @game.turn %>.  It is <%= @game.state %>.
 	  <% else %>
 	    Game has not yet started.
 	  <% end %>
@@ -48,7 +49,7 @@
 		  </div>
 	</div>
 </div>
-
+</div>
 <% if (current_user and not @game.started? and not current_user.is_playing?(@game)) %>
 	 <%= link_to 'Join Game', join_game_path(:id => @game) %> |
 <% end %>

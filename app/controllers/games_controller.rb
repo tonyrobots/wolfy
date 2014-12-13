@@ -60,9 +60,6 @@ class GamesController < ApplicationController
     @comments = Comment.where(game_id:@game.id).order('created_at DESC')
     gon.channel = "/channel-#{@game.id}"
     gon.private_channel = "/channel-p-#{current_player(@game).id}"
-    if flash[:gon_msg]
-      #gon.msg = flash[:gon_msg]
-    end
   end
 
   # GET /games/new
@@ -78,13 +75,17 @@ class GamesController < ApplicationController
     if @game.started? and @game.is_day?
       votee = Player.find(params[:votee_id])
       voter = current_player(@game)
+      if voter.voted_for
+        msg = "#{voter.alias} changed vote from #{voter.voted_for.alias} to #{votee.alias}."
+      else
+        msg = "#{voter.alias} voted for #{votee.alias}."
+      end
       voter.vote_for(votee)
-      msg = "#{voter.alias} voted for #{votee.alias}."
-      add_message(@game, msg)
+      @game.add_message(msg)
     else
       flash.alert = "You can't vote now!"
     end
-    redirect_to @game, :flash => { :gon_msg => msg }
+    redirect_to @game
   end
 
   # POST /games
@@ -143,7 +144,7 @@ class GamesController < ApplicationController
     def players_only
       set_game
       unless current_user.is_playing?(@game)
-        flash.alert = "You must be a player in a game to view it."
+        flash[:warning] = "You must be a player in a game to view it."
         redirect_to games_path
       end
     end

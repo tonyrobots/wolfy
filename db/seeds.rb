@@ -11,6 +11,9 @@
 User.create(email: "tonyzito@gmail.com", password: "coffee")
 puts "created tonyzito@gmail.com user"
 
+User.create(email: "tonyzito+2@gmail.com", password: "coffee")
+puts "created tonyzito+2@gmail.com user"
+
 10.times do |i|
   User.create(email: "email#{i}@test.com", password: "test")
 end
@@ -18,7 +21,7 @@ end
 game = Game.create(name: "New Game", creator_id: 1)
 puts "created game: New Game"
 
-10.times do |i|
+11.times do |i|
   player_name = Faker::Name.name
   Player.create(alias: player_name, game_id: game.id, user_id: "#{i+1}")
   puts "Created #{player_name} and added to New Game"

@@ -18,7 +18,9 @@ class Game < ActiveRecord::Base
       end
     end
     self.save
-    log_event "It is now turn #{self.turn} (#{self.state})."
+    msg =  "It is now turn #{self.turn} (#{self.state})."
+    log_event msg
+    add_message msg
   end
   
   def assign_roles
@@ -48,12 +50,11 @@ class Game < ActiveRecord::Base
   
   def start
     unless self.started?
+      msg = "Game \"#{self.name}\" has begun."
+      log_event msg
+      add_message msg
       assign_roles
-      #@log.add("Game has started.")
-      turn = 0
       advance_turn
-      log_event "Game #{self.name} started!"
-      save
     end
   end
   
@@ -74,12 +75,13 @@ class Game < ActiveRecord::Base
   end
   
   def end_turn
+    #what's this for?
     advance_turn
   end
   
   def count_votes
-    votes_needed = self.players.living.count / 2 + 1
-    #votes_needed = 1
+    #votes_needed = self.players.living.count / 2 + 1
+    votes_needed = 2
     puts "counting votes..."
     for player in self.players.living
       if player.votes_for.count >= votes_needed
@@ -93,4 +95,26 @@ class Game < ActiveRecord::Base
   def log_event(text)
     EventLog.create(:game_id => self.id, :text => text)
   end
+  
+  def add_message(msg, player = false)
+    @comment = self.comments.build(game_id:self.id, body:msg)
+    @comment.save
+    if player
+      channel = "channel-p-#{player.id}"
+    else
+      channel = "/channel-#{self.id}"
+    end
+    payload = { message: ApplicationController.new.render_to_string(@comment)}
+    self.broadcast(channel, payload)
+  end
+  
+  def broadcast(channel, payload)
+    # if you have problems look into event machine start
+    # TODO find way to request.base_url (or equiv) here 
+    base_url = "http://localhost:7777"
+    client = Faye::Client.new("#{base_url}/faye")
+    client.publish(channel, payload )
+    #bayeux.get_client.publish(channel, payload )
+  end
+    
 end

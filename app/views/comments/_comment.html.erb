@@ -7,6 +7,6 @@
 		<% else type='system-comment'%>
 		<% end %></strong> 
 		<span class="<%=type%>"><%= comment.body %></span><br />
-      <small class="text-muted">[at <%= comment.created_at.strftime('%-d %B %Y, %H:%M:%S') %>]</small>
+      <small class="text-muted">[<%= time_ago_in_words comment.created_at %> ago]</small>
   </div>
 </li>
