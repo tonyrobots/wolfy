@@ -1,7 +1,9 @@
+<h1>Werewolf <small>a game of murder & deception</h1>
+	
 <%= link_to 'Create a Game', new_game_path, class:"btn btn-primary pull-right" %>
 
 <%if @user_games %>
-<h1>Your Games</h1>
+<h2>Your Games</h2>
 
 <table class="table table-striped">
   <thead>
@@ -24,31 +26,33 @@
   </tbody>
 </table>
 <% end %>
-<h1>Open Games</h1>
+<h2>Open Games</h2>
+<% if @open_games.count > 0 %>
+	<table class="table table-striped">
+	  <thead>
+	    <tr>
+	      <th>Name</th>
+	      <th>Players</th>
+	      <th></th>
+	      <th></th>
+			<th></th>
+	    </tr>
+	  </thead>
 
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Players</th>
-      <th></th>
-      <th></th>
-		<th></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @open_games.each do |game| %>
-      <tr>
-        <td><% if current_user.try(:is_playing?,game)%><%= link_to game.name, game %><% else %><%= game.name %><% end %></td>
-        <td><%= game.players.count %></td>
-		  <td><% unless current_user.try(:is_playing?,game)%><%= link_to "Join Game", join_game_path(:id => game.id)%><% end %>
-        <td><% if current_user == game.creator %><%= link_to 'Edit', edit_game_path(game) %></td><%end%>
-        <td><% if current_user == game.creator %><%= link_to 'Delete', game, method: :delete, data: { confirm: 'Are you sure?' } %><%end%></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
+	  <tbody>
+	    <% @open_games.each do |game| %>
+	      <tr>
+	        <td><% if current_user.try(:is_playing?,game)%><%= link_to game.name, game %><% else %><%= game.name %><% end %></td>
+	        <td><%= game.players.count %></td>
+			  <td><% unless current_user.try(:is_playing?,game)%><%= link_to "Join Game", join_game_path(:id => game.id)%><% end %>
+	        <td><% if current_user == game.creator %><%= link_to 'Edit', edit_game_path(game) %></td><%end%>
+	        <td><% if current_user == game.creator %><%= link_to 'Delete', game, method: :delete, data: { confirm: 'Are you sure?' } %><%end%></td>
+	      </tr>
+	    <% end %>
+	  </tbody>
+	</table>
+<% else %>
+  There are no games available to join right now. Why don't you <%= link_to "create one?", new_game_path %>
+<% end %>
 <br>
 

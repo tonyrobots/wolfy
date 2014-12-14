@@ -10,6 +10,10 @@ class Player < ActiveRecord::Base
   scope :dead, -> { where(alive: false) }
   scope :non_villagers, -> { where.not(role:"villager") }
   
+  def channel
+    "channel-p-#{self.id}"
+  end
+  
   def assign_role(role)
     self.role = role
     self.alive = true
@@ -97,5 +101,19 @@ class Player < ActiveRecord::Base
   
   def current_move
     self.moves.where(turn:self.game.turn).last
+  end
+  
+  def private_message(msg)
+    payload = { message: ApplicationController.new.render_to_string(@comment)}
+    self.broadcast(self.channel, payload)
+  end
+  
+  def broadcast(channel, payload)
+    # if you have problems look into event machine start
+    # TODO find way to request.base_url (or equiv) here 
+    base_url = "http://localhost:7777"
+    client = Faye::Client.new("#{base_url}/faye")
+    client.publish(channel, payload )
+    #bayeux.get_client.publish(channel, payload )
   end
 end

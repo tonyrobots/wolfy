@@ -9,8 +9,10 @@
   <strong>
 	  <% if @game.turn > 0 %>
 	  Turn: <%= @game.turn %>.  It is <%= @game.state %>.
-	  <% else %>
+	  <% elsif @game.turn == 0 %>
 	    Game has not yet started.
+	  <% else %>
+	    Game is over! 
 	  <% end %>
 	</strong>
 </p>

@@ -46,9 +46,9 @@ class Game < ActiveRecord::Base
     # werewolf_count = (self.players.count/self.rules[:wolf_ratio]).round
     # seer_count = (self.players.count/self.rules[:seer_ratio]).round
     # angel_count = (self.players.count/self.rules[:angel_ratio]).round
-    werewolf_count = (self.players.count/5.0).round
-    seer_count = (self.players.count/10.0).round
-    angel_count = (self.players.count/10.0).round
+    werewolf_count = (players.count/5.0).round
+    seer_count = (players.count/10.0).round
+    angel_count = (players.count/10.0).round
     
     # this is gross. make it nicer!
     self.players.shuffle.each_with_index do |player, index|
@@ -75,11 +75,11 @@ class Game < ActiveRecord::Base
   end
   
   def started?
-    self.turn > 0
+    turn > 0
   end
   
   def is_day?
-    (self.turn % 2) == 1
+    turn > 0 && (turn % 2) == 1
   end
 
   def is_night?
@@ -91,8 +91,26 @@ class Game < ActiveRecord::Base
   end
   
   def end_turn
-    #what's this for?
+    #first, check if victory conditions have been met
+    werewolf_count = self.role_count[:werewolf]
+    if werewolf_count == 0
+      # villagers win!
+      self.game_over("villagers")
+      return
+    elsif werewolf_count * 2 >= self.players.living.count
+      # werewolves win!
+      self.game_over("werewolves")
+      return
+    end
     advance_turn
+  end
+  
+  def game_over(winners)
+    msg = "The game is over! The #{winners} have won!"
+    self.update(turn:-1)
+    # add field to game with winner info, update that
+    log_and_add_message msg
+    reload_clients
   end
   
   def count_votes
@@ -108,7 +126,7 @@ class Game < ActiveRecord::Base
     end
   end 
   
-  def check_night_moves
+  def check_if_night_is_over
     for player in self.players.living.non_villagers
       if self.moves.where(turn:self.turn).where(player:player).first
         puts "#{player.alias} has moved."
@@ -127,8 +145,7 @@ class Game < ActiveRecord::Base
       end
     end
     msg = "Night is over."
-    log_event msg
-    add_message msg
+    log_and_add_message msg
     evaluate_night_moves(prospective_target)
   end
   
@@ -155,6 +172,11 @@ class Game < ActiveRecord::Base
     end_turn
   end
   
+  def log_and_add_message(msg)
+    log_event msg
+    add_message msg
+  end
+  
   def log_event(text)
     EventLog.create(:game_id => self.id, :text => text)
   end
@@ -178,6 +200,14 @@ class Game < ActiveRecord::Base
     client = Faye::Client.new("#{base_url}/faye")
     client.publish(channel, payload )
     #bayeux.get_client.publish(channel, payload )
+  end
+  
+  def broadcast_to_role(role, msg)
+    for player in self.players.alive
+      if player.role == role
+        player.private_message(msg)
+      end
+    end
   end
   
   def reload_clients

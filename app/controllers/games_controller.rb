@@ -33,9 +33,12 @@ class GamesController < ApplicationController
   end
   
   def start
+    # TODO this looks like it could be vulnerable to players restarting games
     min_players = 7
     if @game.players.count < min_players 
       flash[:warning] = "Oops! You need at least #{min_players} players to start."
+    elsif @game.turn != 0
+      flash[:warning] = "Hmm. That game has already started, or is already over."
     else
       @game.start
       flash[:success] = "The game has begun!"
@@ -95,13 +98,15 @@ class GamesController < ApplicationController
     case move
     when "attack"
       current_player(@game).attack(target)
+      msg = "#{current_player(@game).alias} will attack #{target.alias} tonight."
+      @game.broadcast_to_role("werewolf", msg)
     when "reveal"
       current_player(@game).reveal(target)
     when "protect"
       current_player(@game).protect(target)
     end
     flash[:success] = "You made your #{move} move on #{target.alias}."
-    @game.check_night_moves
+    @game.check_if_night_is_over
     redirect_to @game
   end
     

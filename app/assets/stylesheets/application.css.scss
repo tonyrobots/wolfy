@@ -12,14 +12,20 @@
  *= require_tree .
  */
 
+@import url(http://fonts.googleapis.com/css?family=Raleway:700,400|Open+Sans:400,700);
+
+$font-family-sans-serif:  "Open Sans","Helvetica Neue", Helvetica, Arial, sans-serif !default;
+
 $brand-primary: #742809;
 $border-radius-base:        0px;
 $border-radius-large:       0px;
 $border-radius-small:       0px;
+$headings-font-family: 'Raleway', sans-serif;
 
 
 @import "bootstrap-sprockets";
 @import "bootstrap";
+
 
 .player {
 	padding: 5px;
