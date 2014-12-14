@@ -134,7 +134,7 @@ class Game < ActiveRecord::Base
   
   def evaluate_night_moves(attack_target)
     # kills first
-    if self.moves.where(action:"protect").pluck(:target_id).include? attack_target.id
+    if self.moves.where(turn:self.turn).where(action:"protect").pluck(:target_id).include? attack_target.id
       # victim was protected!
       msg = "You awaken to an eerie quiet. Nobody was killed last night!"
       log_event msg
@@ -145,6 +145,12 @@ class Game < ActiveRecord::Base
       log_event msg
       add_message msg
       attack_target.kill
+    end
+    #reveal seer info
+    for move in self.moves.where(turn:self.turn).where(action:"reveal")
+      msg = "#{move.player.alias} revealed #{move.target.alias} as a #{move.target.role}."
+      log_event msg
+      add_message msg
     end
     end_turn
   end
