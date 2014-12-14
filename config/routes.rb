@@ -1,5 +1,5 @@
 Werewolf::Application.routes.draw do
-  resources :players
+  resources :players, only:[:update]
   resources :games do
     resources :event_logs, :as => 'logs', :only=>[:index]
   end

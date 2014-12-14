@@ -44,13 +44,20 @@ class PlayersController < ApplicationController
   # PATCH/PUT /players/1
   # PATCH/PUT /players/1.json
   def update
-    respond_to do |format|
-      if @player.update(player_params)
-        format.html { redirect_to @player, notice: 'Player was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: 'edit' }
-        format.json { render json: @player.errors, status: :unprocessable_entity }
+    if current_user and @player.user == current_user
+      respond_to do |format|
+        if @player.update(player_params)
+          format.html { redirect_to @player, notice: 'Player alias was successfully updated.' }
+          format.json { render :json => @player  }
+        else
+          format.html { render action: 'edit' }
+          format.json { render json: @player.errors, status: :unprocessable_entity }
+        end
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to @player.game }
+        format.json { render :json => @player }
       end
     end
   end
@@ -73,6 +80,6 @@ class PlayersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def player_params
-      params.require(:player).permit(:alias, :role, :alive, :last_move)
+      params.require(:player).permit(:alias)
     end
 end

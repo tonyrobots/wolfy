@@ -40,6 +40,9 @@ gem 'gon'
 gem 'bootstrap-sass'
 gem 'autoprefixer-rails'
 
+# edit in place
+gem 'rest_in_place'
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false

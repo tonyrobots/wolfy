@@ -15,6 +15,7 @@
 //= require bootstrap-sprockets
 //= require turbolinks
 //= require jquery.turbolinks
+//= require 'rest_in_place'
 //= require faye
 //= require comments
 //= require_tree .
