@@ -1,7 +1,7 @@
 class EventLogsController < ApplicationController
   def index
     set_game
-    @logs = @game.event_logs
+    @logs = @game.event_logs.order("created_at ASC")
   end
     
   private

@@ -80,14 +80,33 @@ class GamesController < ApplicationController
       else
         msg = "#{voter.alias} voted for #{votee.alias}."
       end
-      voter.vote_for(votee)
       @game.add_message(msg)
+      voter.vote_for(votee)
+      @game.count_votes
     else
       flash.alert = "You can't vote now!"
     end
     redirect_to @game
   end
 
+  def move
+    move = params[:move]
+    target = Player.find_by_id(params[:target])
+    case move
+    when "attack"
+      current_player(@game).attack(target)
+    when "reveal"
+      current_player(@game).reveal(target)
+    when "protect"
+      current_player(@game).protect(target)
+    end
+    flash[:success] = "You made your #{move} move on #{target.alias}."
+    @game.check_night_moves
+    redirect_to @game
+  end
+    
+    
+    
   # POST /games
   # POST /games.json
   def create

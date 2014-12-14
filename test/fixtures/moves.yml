@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  game_id: 1
+  action: MyString
+  player_id: 
+  turn: 1
+  target_id: 1
+
+two:
+  game_id: 1
+  action: MyString
+  player_id: 
+  turn: 1
+  target_id: 1

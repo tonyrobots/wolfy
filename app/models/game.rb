@@ -5,6 +5,21 @@ class Game < ActiveRecord::Base
   has_many :event_logs, dependent: :destroy
   has_many :votes, dependent: :destroy
   has_many :comments, dependent: :destroy
+  has_many :moves, dependent: :destroy
+  
+  def channel
+    "/channel-#{self.id}"
+  end
+  
+  def role_count
+    # probably can DRY this
+    {
+      werewolf: players.living.where(role:"werewolf").count,
+      seer: players.living.where(role:"seer").count,
+      angel: players.living.where(role:"angel").count,
+      villager: players.living.where(role:"villager").count
+    }
+  end
   
   def advance_turn
    self.turn += 1
@@ -21,6 +36,7 @@ class Game < ActiveRecord::Base
     msg =  "It is now turn #{self.turn} (#{self.state})."
     log_event msg
     add_message msg
+    reload_clients
   end
   
   def assign_roles
@@ -92,6 +108,47 @@ class Game < ActiveRecord::Base
     end
   end 
   
+  def check_night_moves
+    for player in self.players.living.non_villagers
+      if self.moves.where(turn:self.turn).where(player:player).first
+        puts "#{player.alias} has moved."
+      else
+        return
+        break
+      end
+    end
+    #make sure werewolves agree
+    prospective_target = self.players.living.where(role:"werewolf").first.current_move.target
+    for wolf in self.players.living.where(role:"werewolf")
+      if wolf.current_move.target != prospective_target
+        puts "Werewolves don't agree!"
+        return
+        break
+      end
+    end
+    msg = "Night is over."
+    log_event msg
+    add_message msg
+    evaluate_night_moves(prospective_target)
+  end
+  
+  def evaluate_night_moves(attack_target)
+    # kills first
+    if self.moves.where(action:"protect").pluck(:target_id).include? attack_target.id
+      # victim was protected!
+      msg = "You awaken to an eerie quiet. Nobody was killed last night!"
+      log_event msg
+      add_message msg
+    else
+      # uh oh...
+      msg = "You awaken to a blood-curdling scream! #{attack_target.alias} was killed by werewolves."
+      log_event msg
+      add_message msg
+      attack_target.kill
+    end
+    end_turn
+  end
+  
   def log_event(text)
     EventLog.create(:game_id => self.id, :text => text)
   end
@@ -102,7 +159,7 @@ class Game < ActiveRecord::Base
     if player
       channel = "channel-p-#{player.id}"
     else
-      channel = "/channel-#{self.id}"
+      channel = self.channel
     end
     payload = { message: ApplicationController.new.render_to_string(@comment)}
     self.broadcast(channel, payload)
@@ -115,6 +172,10 @@ class Game < ActiveRecord::Base
     client = Faye::Client.new("#{base_url}/faye")
     client.publish(channel, payload )
     #bayeux.get_client.publish(channel, payload )
+  end
+  
+  def reload_clients
+    broadcast "/channel-#{self.id}", {reload: true}
   end
     
 end

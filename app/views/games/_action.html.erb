@@ -8,8 +8,15 @@
 				<% end %>
 		<% end %>
 		<%= " You! " if player == current_player(@game)%>
-	<% else %>
-	 	Night move!
+	<% else # if it's night %>
+		<% unless current_player(@game).role == "villager" %>
+		   <% move = MOVES[current_player(@game).role] %>
+			<% if current_player(@game).try(:current_move).try(:target) == player %>
+				<%= "#{move}ing tonight"%>
+			<% else %>
+			  <%= button_to move, move_path(move:move, target:player), class:"btn btn-#{move}" %>
+			<% end %>
+		<% end %>
 	<% end %>
 <% elsif player == current_player(@game) %>
 		change alias
