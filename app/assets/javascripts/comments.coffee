@@ -26,6 +26,7 @@ jQuery ->
   client.subscribe gon.channel, (payload) ->
     $('#comments').find('.media-list').prepend(payload.message) if payload.message
   	 location.reload true  if payload.reload
+	 
   client.subscribe gon.private_channel, (payload) ->
     $('#comments').find('.media-list').prepend(payload.message) if payload.message
 

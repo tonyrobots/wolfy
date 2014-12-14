@@ -70,6 +70,7 @@ class Game < ActiveRecord::Base
       log_event msg
       add_message msg
       assign_roles
+      set_initial_knowledge
       advance_turn
     end
   end
@@ -102,7 +103,7 @@ class Game < ActiveRecord::Base
       self.game_over("werewolves")
       return
     end
-    advance_turn
+    self.advance_turn
   end
   
   def game_over(winners)
@@ -117,8 +118,11 @@ class Game < ActiveRecord::Base
     #votes_needed = self.players.living.count / 2 + 1
     votes_needed = 2
     puts "counting votes..."
+    # if player has majority of votes, he's out
+    most_votes = 0
+    #TODO if all players have voted, and one player (alone) has most votes, they are off
     for player in self.players.living
-      if player.votes_for.count >= votes_needed
+      if player.votes_for.where(turn:self.turn).count >= votes_needed
         player.lynch
         end_turn
         return
@@ -147,6 +151,7 @@ class Game < ActiveRecord::Base
     msg = "Night is over."
     log_and_add_message msg
     evaluate_night_moves(prospective_target)
+    self.end_turn
   end
   
   def evaluate_night_moves(attack_target)
@@ -154,22 +159,33 @@ class Game < ActiveRecord::Base
     if self.moves.where(turn:self.turn).where(action:"protect").pluck(:target_id).include? attack_target.id
       # victim was protected!
       msg = "You awaken to an eerie quiet. Nobody was killed last night!"
-      log_event msg
-      add_message msg
+      log_and_add_message msg
     else
       # uh oh...
       msg = "You awaken to a blood-curdling scream! #{attack_target.alias} was killed by werewolves."
-      log_event msg
-      add_message msg
+      log_and_add_message msg
       attack_target.kill
     end
     #reveal seer info
     for move in self.moves.where(turn:self.turn).where(action:"reveal")
+      next unless move.player.alive
+      move.player.knows_about!(move.target)
       msg = "#{move.player.alias} revealed #{move.target.alias} as a #{move.target.role}."
       log_event msg
-      add_message msg
+      move.player.private_message("You have seen that #{move.target.alias} is a #{move.target.role}.")
     end
-    end_turn
+  end
+  
+  def set_initial_knowledge
+    for player in self.players
+      case player.role
+      when "werewolf"
+        for wolf in self.players.werewolves
+          player.knows_about!(wolf)
+          puts "#{player.alias} knows about #{wolf.alias}"
+        end
+      end
+    end
   end
   
   def log_and_add_message(msg)
@@ -203,7 +219,7 @@ class Game < ActiveRecord::Base
   end
   
   def broadcast_to_role(role, msg)
-    for player in self.players.alive
+    for player in self.players.living
       if player.role == role
         player.private_message(msg)
       end

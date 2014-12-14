@@ -14,6 +14,9 @@
 	  <% else %>
 	    Game is over! 
 	  <% end %>
+	  <% if not current_player(@game).alive %>
+	  	You are DEAD.
+		<% end %>
 	</strong>
 </p>
 <div class="row">
@@ -22,10 +25,15 @@
 		<h3>Players:</h3>
 		<table class="table table-striped">
 		<% for player in @game.players.living %>
+			<% is_self = (current_player(@game) == player) %>
 				<tr><td>			
-					<%= render "games/action", player: player%>
+					<%= render "games/action", player: player if current_player(@game).alive%>
 				</td>
-				<td><%= player.alias %> (<%= player.role %>)</td>
+				<td><div class=""><%= player.alias %> 
+					<% if @game.started? and (current_player(@game).knows_about? player or is_self) %>
+						(<%= player.role %>)
+					<% end %>
+				</td>
 			</tr>
 		<% end %>
 	</table>

@@ -60,7 +60,7 @@ class GamesController < ApplicationController
   def show
     @votee = current_player(@game).voted_for
     @comment = Comment.new
-    @comments = Comment.where(game_id:@game.id).order('created_at DESC')
+    @comments = current_player(@game).readable_comments
     gon.channel = "/channel-#{@game.id}"
     gon.private_channel = "/channel-p-#{current_player(@game).id}"
   end
@@ -78,7 +78,7 @@ class GamesController < ApplicationController
     if @game.started? and @game.is_day?
       votee = Player.find(params[:votee_id])
       voter = current_player(@game)
-      if voter.voted_for
+      if voter.voted_for and voter.voted_for != votee
         msg = "#{voter.alias} changed vote from #{voter.voted_for.alias} to #{votee.alias}."
       else
         msg = "#{voter.alias} voted for #{votee.alias}."

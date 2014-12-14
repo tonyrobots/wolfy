@@ -5,19 +5,28 @@ class Player < ActiveRecord::Base
   has_many :moves
   has_many :votes_for, class_name: 'Vote', foreign_key: :votee_id
   has_many :comments, dependent: :delete_all
+  has_many :comments_to, class_name: 'Comment', foreign_key: :target_id
   
   scope :living, -> { where(alive: true) }
   scope :dead, -> { where(alive: false) }
   scope :non_villagers, -> { where.not(role:"villager") }
+  scope :werewolves, -> {where(role:"werewolf")}
   
   def channel
-    "channel-p-#{self.id}"
+    "/channel-p-#{self.id}"
+  end
+  
+  def readable_comments
+    @comments = self.game.comments.public + self.comments_to
+    @comments.sort_by(&:created_at).reverse
+    #@comments = self.game.comments.public.merge(self.comments_to)
   end
   
   def assign_role(role)
     self.role = role
     self.alive = true
     self.game.log_event "#{self.alias} is a #{self.role}."
+    self.private_message "You are a #{self.role}."
     self.save
   end
   
@@ -103,7 +112,13 @@ class Player < ActiveRecord::Base
     self.moves.where(turn:self.game.turn).last
   end
   
-  def private_message(msg)
+  def private_message(msg,sender=false)
+    if sender
+      @comment = self.comments.build(game_id:self.id, body:msg,created_at:Time.now, player_id:sender.id, target_id:self.id)
+    else
+      @comment = self.comments.build(game_id:self.id, body:msg,created_at:Time.now, target_id:self.id)
+    end
+    @comment.save
     payload = { message: ApplicationController.new.render_to_string(@comment)}
     self.broadcast(self.channel, payload)
   end
@@ -113,7 +128,17 @@ class Player < ActiveRecord::Base
     # TODO find way to request.base_url (or equiv) here 
     base_url = "http://localhost:7777"
     client = Faye::Client.new("#{base_url}/faye")
-    client.publish(channel, payload )
+    client.publish(channel, payload)
     #bayeux.get_client.publish(channel, payload )
+  end
+  
+  def knows_about?(target)
+    self.knowledge.include? target.id
+  end
+  
+  def knows_about!(target)
+    self.knowledge << target.id
+    self.knowledge_will_change!
+    self.save!
   end
 end
