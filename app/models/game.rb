@@ -201,7 +201,7 @@ class Game < ActiveRecord::Base
     @comment = self.comments.build(game_id:self.id, body:msg)
     @comment.save
     if player
-      channel = "channel-p-#{player.id}"
+      channel = player.channel
     else
       channel = self.channel
     end
@@ -212,7 +212,7 @@ class Game < ActiveRecord::Base
   def broadcast(channel, payload)
     # if you have problems look into event machine start
     # TODO find way to request.base_url (or equiv) here 
-    base_url = "http://localhost:7777"
+    base_url = BASE_URL
     client = Faye::Client.new("#{base_url}/faye")
     client.publish(channel, payload )
     #bayeux.get_client.publish(channel, payload )

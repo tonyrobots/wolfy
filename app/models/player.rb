@@ -129,7 +129,7 @@ class Player < ActiveRecord::Base
   def broadcast(channel, payload)
     # if you have problems look into event machine start
     # TODO find way to request.base_url (or equiv) here 
-    base_url = "http://localhost:7777"
+    base_url = BASE_URL
     #base_url = ApplicationController.new.request.base_url
     client = Faye::Client.new("#{base_url}/faye")
     client.publish(channel, payload)
