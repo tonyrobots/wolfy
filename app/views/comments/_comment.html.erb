@@ -1,7 +1,7 @@
 <li class="media comment">
   <div class="media-body">
     <strong>
- 		<% if comment.target %>
+ 		<% if comment.target and comment.player %>
 		   <% type='private-comment'%>
 			<%= comment.player.alias %>:
 		<% elsif comment.player %>

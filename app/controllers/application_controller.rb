@@ -11,6 +11,8 @@ class ApplicationController < ActionController::Base
   helper_method :current_player
   
   def add_message(game, msg, player = false)
+    # TODO cleanup
+    # DON'T USE, CHECK MODEL METHOD
     @comment = game.comments.build(game_id:game.id, body:msg)
     @comment.save
     if player
@@ -23,6 +25,7 @@ class ApplicationController < ActionController::Base
   end
   
   def broadcast(channel, payload)
+    # DON'T USE -- USE MODEL VERSION INSTEAD
     # if you have problems look into event machine start
     base_url = request ? request.base_url : "http://localhost:7777"
     #client = Faye::Client.new("#{base_url}/faye")

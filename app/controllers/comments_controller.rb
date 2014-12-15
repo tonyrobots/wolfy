@@ -14,9 +14,15 @@ class CommentsController < ApplicationController
         when :role
           @game.broadcast_to_role(msg[:target].to_s, msg[:body], sender)
           @private = true
+          format.html {redirect_to root_url}
+          format.js
+          return
         # when :private
         #  target.private_message(msg[:body], sender)
         #  @private = true
+        # format.html {redirect_to root_url}
+        # format.js
+        # return
         else
           body = comment_params[:body]        
           gon.channel = @game.channel
