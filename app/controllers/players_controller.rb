@@ -44,7 +44,7 @@ class PlayersController < ApplicationController
   # PATCH/PUT /players/1
   # PATCH/PUT /players/1.json
   def update
-    if current_user and @player.user == current_user
+    if current_user and @player.user == current_user and @player.game.turn == 0
       respond_to do |format|
         if @player.update(player_params)
           format.html { redirect_to @player, notice: 'Player alias was successfully updated.' }

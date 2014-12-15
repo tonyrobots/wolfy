@@ -12,6 +12,9 @@ class Player < ActiveRecord::Base
   scope :non_villagers, -> { where.not(role:"villager") }
   scope :werewolves, -> {where(role:"werewolf")}
   
+  validates :alias, uniqueness: { scope: :game_id,
+      message: "That alias is already being used in this game." }
+  
   def channel
     "/channel-p-#{self.id}"
   end
@@ -114,9 +117,9 @@ class Player < ActiveRecord::Base
   
   def private_message(msg,sender=false)
     if sender
-      @comment = self.comments.build(game_id:self.id, body:msg,created_at:Time.now, player_id:sender.id, target_id:self.id)
+      @comment = Comment.new(game_id:self.game_id, body:msg, created_at:Time.now, player_id:sender.id, target_id:self.id)
     else
-      @comment = self.comments.build(game_id:self.id, body:msg,created_at:Time.now, target_id:self.id)
+      @comment = Comment.new(game_id:self.game_id, body:msg, created_at:Time.now, target_id:self.id)
     end
     @comment.save
     payload = { message: ApplicationController.new.render_to_string(@comment)}

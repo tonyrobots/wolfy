@@ -1,7 +1,8 @@
+<% unless @private %>
 publisher = client.publish(gon.channel, {
   message: '<%= j render @comment %>'
 });
-
+<%end%>	
 publisher.callback(function() {
   $('#comment_body').val('');
   $('#new_comment').find("input[type='submit']").val('Submit').prop('disabled', false)

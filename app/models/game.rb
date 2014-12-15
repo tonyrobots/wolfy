@@ -197,7 +197,7 @@ class Game < ActiveRecord::Base
     EventLog.create(:game_id => self.id, :text => text)
   end
   
-  def add_message(msg, player = false)
+  def add_message(msg, player=false)
     @comment = self.comments.build(game_id:self.id, body:msg)
     @comment.save
     if player
@@ -218,10 +218,10 @@ class Game < ActiveRecord::Base
     #bayeux.get_client.publish(channel, payload )
   end
   
-  def broadcast_to_role(role, msg)
+  def broadcast_to_role(role, msg, sender=false)
     for player in self.players.living
       if player.role == role
-        player.private_message(msg)
+        player.private_message(msg, sender)
       end
     end
   end

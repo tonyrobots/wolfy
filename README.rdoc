@@ -12,7 +12,7 @@ Make roles private (unless known to seer)
 
 Private messaging for seers
 
-Private messaging (howl) for werewolves
+Private messaging (howl) for werewolves -- CHANGE TARGET ON COMMENTS TO ARRAY TYPE, REFACTOR BROADCAST TO ROLE
 
 Players can change alias
 
@@ -29,3 +29,10 @@ Implement game settings?
 Roles:
  - illusionist?
  - others?
+
+        if msg = params[:comment][:body].match(/^(\/w)\b*(.*)/)
+          body = msg[2].strip
+          #target = 
+          broadcast_to_role("werewolf", body)
+          format.js {render nothing: true}
+        end
