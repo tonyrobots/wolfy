@@ -49,7 +49,7 @@
 			<p><h4>Dead:</h4>
 			<% for player in @game.players.dead %>
 				<div class="player inline">
-					<%= "* " if player == current_player(@game)%><%= player.alias %> (<%= player.role  %>) <br />
+					<%= "* " if player == current_player(@game)%><%= player.alias %> (<%= player.role  %>) - <%= player.user.email %> <br />
 				</div>
 			<% end %>
 		<%end%>
