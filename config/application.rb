@@ -23,5 +23,6 @@ module Werewolf
     # config.i18n.default_locale = :de
     config.middleware.delete Rack::Lock
     config.middleware.use FayeRails::Middleware, extensions: [CsrfProtection.new], mount: '/faye', :timeout => 25
+    config.autoload_paths += %W(#{config.root}/lib)
   end
 end

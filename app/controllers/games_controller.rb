@@ -4,6 +4,7 @@ class GamesController < ApplicationController
   before_filter :players_only, only:[:show]
   
   def join
+    # probably move some of this logic to model?
     if @game.turn > 0
       logger.error "Attempt to join started game #{@game.id}"
       redirect_to game_url, :alert => "Too late to join that game!"
@@ -17,9 +18,11 @@ class GamesController < ApplicationController
       if params[:alias].present?
         player_alias = params[:alias].strip
       else
-        player_alias = "Player #{@game.players.count + 1}"
+        player_alias = Faker::Name.name
       end
       @player = @game.players.build(:user => current_user, :alias => player_alias)
+      @game.log_and_add_message("#{player_alias} has joined the game.")
+      @game.reload_clients
       respond_to do |format|
         if @player.save
           format.html { redirect_to @game, notice: 'Player was successfully created.' }
@@ -86,6 +89,7 @@ class GamesController < ApplicationController
       @game.add_message(msg)
       voter.vote_for(votee)
       @game.count_votes
+      @game.reload_clients
     else
       flash.alert = "You can't vote now!"
     end

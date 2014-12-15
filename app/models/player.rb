@@ -1,4 +1,7 @@
 class Player < ActiveRecord::Base
+  
+  include Broadcast
+  
   belongs_to :user
   belongs_to :game
   has_many :votes, foreign_key: :voter_id
@@ -126,15 +129,22 @@ class Player < ActiveRecord::Base
     self.broadcast(self.channel, payload)
   end
   
-  def broadcast(channel, payload)
-    # if you have problems look into event machine start
-    # TODO find way to request.base_url (or equiv) here 
-    base_url = BASE_URL
-    #base_url = ApplicationController.new.request.base_url
-    client = Faye::Client.new("#{base_url}/faye")
-    client.publish(channel, payload)
-    #bayeux.get_client.publish(channel, payload )
-  end
+  # def broadcast(channel, payload)
+  #   begin
+  #     # if you have problems look into event machine start
+  #     # TODO find way to request.base_url (or equiv) here
+  #     base_url = BASE_URL
+  #     #base_url = ApplicationController.new.request.base_url
+  #     # client = Faye::Client.new("#{base_url}/faye")
+  #     # client.publish(channel, payload)
+  #     #bayeux.get_client.publish(channel, payload )
+  #     Messaging.bayeux.publish(channel, payload )
+  #   rescue => e
+  #     puts "can't broadcast message #{payload}"
+  #     logger.error e.message
+  #     logger.error e.backtrace.join("\n")
+  #   end
+  # end
   
   def knows_about?(target)
     self.knowledge.include? target.id

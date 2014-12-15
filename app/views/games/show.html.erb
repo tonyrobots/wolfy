@@ -37,17 +37,20 @@
 					<% else %>
 						<%= player.alias %> 
 					<% end %>
-					<% if @game.started? and (current_player(@game).knows_about? player or is_self) %>
+					<% if (@game.started? and (current_player(@game).knows_about? player or is_self) or @game.is_over?) %>
 						(<%= player.role %>)
+						<% if @game.is_over? %>
+							- <%= player.user.email %>
+						<% end %>
 					<% end %><br />
-					<% if @game.is_day? and player.votes_for.count > 0 %>
+					<% if @game.is_day? and player.votes_for.where(turn:@game.turn).count > 0 %>
 						<div class="voters">
-							Voted for by <%=  player.votes_for.map { |vote| vote.voter.alias }.to_sentence %>.
+							Voted for by <%=  player.votes_for.where(turn:@game.turn).map { |vote| vote.voter.alias }.to_sentence %>.
 						</div>
 					<%end%>
 				</div></td>
-				<td><% if @game.is_day? and player.votes_for.count > 0 %>
-					<div class="vote_count"> <%= player.votes_for.count %></div>
+				<td><% if @game.is_day? and player.votes_for.where(turn:@game.turn).count > 0 %>
+					<div class="vote_count"> <%= player.votes_for.where(turn:@game.turn).count %></div>
 					<% end %>
 				</td>
 			</tr>

@@ -1,4 +1,6 @@
 class Game < ActiveRecord::Base
+  include Broadcast
+  
   has_many :players, dependent: :destroy
   has_many :users, through: :players
   belongs_to :creator, :class_name => 'User', :foreign_key => 'creator_id'
@@ -82,13 +84,17 @@ class Game < ActiveRecord::Base
   def is_day?
     turn > 0 && (turn % 2) == 1
   end
-
+  
   def is_night?
     if self.turn > 0
       (self.turn % 2) == 0
     else
       return FALSE
     end
+  end
+  
+  def is_over?
+    self.state == "finished"
   end
   
   def end_turn
@@ -108,15 +114,15 @@ class Game < ActiveRecord::Base
   
   def game_over(winners)
     msg = "The game is over! The #{winners} have won!"
-    self.update(turn:-1)
+    self.update(state:"finished")
     # add field to game with winner info, update that
     log_and_add_message msg
     reload_clients
   end
   
   def count_votes
-    #votes_needed = self.players.living.count / 2 + 1
-    votes_needed = 2
+    votes_needed = self.players.living.count / 2 + 1
+    #votes_needed = 2
     puts "counting votes..."
     # if player has majority of votes, he's out
     most_votes = 0
@@ -209,14 +215,18 @@ class Game < ActiveRecord::Base
     self.broadcast(channel, payload)
   end
   
-  def broadcast(channel, payload)
-    # if you have problems look into event machine start
-    # TODO find way to request.base_url (or equiv) here 
-    base_url = BASE_URL
-    client = Faye::Client.new("#{base_url}/faye")
-    client.publish(channel, payload )
-    #bayeux.get_client.publish(channel, payload )
-  end
+  # def broadcast(channel, payload)
+  #   begin
+  #     # if you have problems look into event machine start
+  #     # TODO find way to request.base_url (or equiv) here
+  #     base_url = BASE_URL
+  #     #client = Faye::Client.new("#{base_url}/faye")
+  #     #client.publish(channel, payload )
+  #     Messaging.bayeux.publish(channel, payload )
+  #   rescue
+  #     puts "can't broadcast message #{payload}"
+  #   end
+  # end
   
   def broadcast_to_role(role, msg, sender=false)
     for player in self.players.living
