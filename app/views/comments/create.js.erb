@@ -1,4 +1,4 @@
-<% unless @private %>
+<% unless @private or @error %>
 publisher = client.publish(gon.channel, {
   message: '<%= j render @comment %>'
 });

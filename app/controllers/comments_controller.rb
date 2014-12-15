@@ -12,8 +12,12 @@ class CommentsController < ApplicationController
         msg = Comment.parse_comment(comment_params[:body])
         case msg[:type]
         when :role
-          @game.broadcast_to_role(msg[:target].to_s, msg[:body], sender)
-          @private = true
+          if current_player(@game).role == "werewolf"
+            @game.broadcast_to_role(msg[:target].to_s, msg[:body], sender)
+            @private = true
+          else
+            @error = true
+          end
           format.html {redirect_to root_url}
           format.js
           return
