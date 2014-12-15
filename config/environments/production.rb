@@ -1,6 +1,6 @@
 Werewolf::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
-  BASE_URL = "http://wolfy.heroku.com"
+  BASE_URL = "http://wolfy.herokuapp.com"
 
   # Code is not reloaded between requests.
   config.cache_classes = true
