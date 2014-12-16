@@ -36,8 +36,7 @@ class Game < ActiveRecord::Base
     end
     self.save
     msg =  "It is now turn #{self.turn} (#{self.state})."
-    log_event msg
-    add_message msg
+    log_and_add_message msg
     reload_clients
   end
   
@@ -110,12 +109,17 @@ class Game < ActiveRecord::Base
       return
     end
     self.advance_turn
+    
   end
   
   def game_over(winners)
     msg = "The game is over! The #{winners} have won!"
     self.update(state:"finished")
     # add field to game with winner info, update that
+    good_guys_won = winners != "werewolves"
+    for player in self.players
+      player.record_stats(good_guys_won == player.good_guy?,player.alive)
+    end
     log_and_add_message msg
     reload_clients
   end
@@ -168,7 +172,11 @@ class Game < ActiveRecord::Base
       log_and_add_message msg
     else
       # uh oh...
-      msg = "You awaken to a blood-curdling scream! #{attack_target.alias} was killed by werewolves."
+      if attack_target.role != "werewolf"
+        msg = "You awaken to a blood-curdling scream! #{attack_target.alias} was killed by werewolves."
+      else
+        msg = "Oh my! In a bizarre twist, you awaken to find that #{attack_target.alias} was murdered by werewolves!"
+      end
       log_and_add_message msg
       attack_target.kill
     end
@@ -214,19 +222,6 @@ class Game < ActiveRecord::Base
     payload = { message: ApplicationController.new.render_to_string(@comment)}
     self.broadcast(channel, payload)
   end
-  
-  # def broadcast(channel, payload)
-  #   begin
-  #     # if you have problems look into event machine start
-  #     # TODO find way to request.base_url (or equiv) here
-  #     base_url = BASE_URL
-  #     #client = Faye::Client.new("#{base_url}/faye")
-  #     #client.publish(channel, payload )
-  #     Messaging.bayeux.publish(channel, payload )
-  #   rescue
-  #     puts "can't broadcast message #{payload}"
-  #   end
-  # end
   
   def broadcast_to_role(role, msg, sender=false)
     for player in self.players.living

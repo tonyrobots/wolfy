@@ -82,6 +82,10 @@ class Player < ActiveRecord::Base
     end
   end
   
+  def good_guy?
+    role != "werewolf"
+  end
+  
   ### Player actions
     
   def attack(target)
@@ -129,23 +133,6 @@ class Player < ActiveRecord::Base
     self.broadcast(self.channel, payload)
   end
   
-  # def broadcast(channel, payload)
-  #   begin
-  #     # if you have problems look into event machine start
-  #     # TODO find way to request.base_url (or equiv) here
-  #     base_url = BASE_URL
-  #     #base_url = ApplicationController.new.request.base_url
-  #     # client = Faye::Client.new("#{base_url}/faye")
-  #     # client.publish(channel, payload)
-  #     #bayeux.get_client.publish(channel, payload )
-  #     Messaging.bayeux.publish(channel, payload )
-  #   rescue => e
-  #     puts "can't broadcast message #{payload}"
-  #     logger.error e.message
-  #     logger.error e.backtrace.join("\n")
-  #   end
-  # end
-  
   def knows_about?(target)
     self.knowledge.include? target.id
   end
@@ -154,5 +141,26 @@ class Player < ActiveRecord::Base
     self.knowledge << target.id
     self.knowledge_will_change!
     self.save!
+  end
+  
+  def record_stats(player_won, player_survived)
+    @stats = self.user.stats || UserStats.new(user_id: self.user.id)
+    @stats.played_count += 1
+    @stats.wins_count +=1 if player_won
+    @stats.survived_count +=1 if player_survived
+
+    case self.role
+    when "werewolf"
+      @stats.wolf_count +=1
+    when "seer"
+      @stats.seer_count +=1
+    when "angel"
+      @stats.angel_count +=1
+    when "illusionist"
+      @stats.illusionist_count +=1
+    when "villager"
+      @stats.villager_count +=1
+    end
+    @stats.save
   end
 end

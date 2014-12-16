@@ -26,9 +26,9 @@ namespace :debug do
     game_id = ENV['game_id'] || 1
     puts "Random votes for game #{game_id}..."
     game = Game.find(game_id)
+    votee = game.players.living.shuffle.last
     for player in game.players.living
       next if player.voted_for
-      votee = game.players.living.last
       player.vote_for(votee)
       puts "#{player.alias} voted for #{votee.alias}"
     end

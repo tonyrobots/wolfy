@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-  
+  has_one :stats, class_name:'UserStats'
   has_many :players
   has_many :games, through: :players
   # Include default devise modules. Others available are:
@@ -14,5 +14,4 @@ class User < ActiveRecord::Base
   def join(game)
     game.users << self
   end
-  
 end
