@@ -82,7 +82,7 @@ class GamesController < ApplicationController
       else
         msg = "#{voter.alias} voted for #{votee.alias}."
       end
-      @game.add_message(msg)
+      @game.log_and_add_message(msg)
       voter.vote_for(votee)
       @game.count_votes
       @game.reload_clients
@@ -100,12 +100,17 @@ class GamesController < ApplicationController
       current_player(@game).attack(target)
       msg = "#{current_player(@game).alias} will attack #{target.alias} tonight."
       @game.broadcast_to_role("werewolf", msg)
+      @game.log_event msg
     when "reveal"
       current_player(@game).reveal(target)
+      msg = "#{current_player(@game).alias} will reveal #{target.alias} tonight."
+      @game.log_event msg
     when "protect"
       current_player(@game).protect(target)
+      msg = "#{current_player(@game).alias} will protect #{target.alias} tonight."
+      @game.log_event msg
     end
-    flash[:success] = "You made your #{move} move on #{target.alias}."
+    #flash[:success] = "You made your #{move} move on #{target.alias}."
     @game.check_if_night_is_over
     redirect_to @game
   end

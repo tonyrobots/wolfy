@@ -41,15 +41,15 @@ class Game < ActiveRecord::Base
   end
   
   def assign_roles
-    #probably make this protected somehow so only self can run, also should confirm correct conditions (e.g. turn ==0)
-    #update these counts later so they are based on @rules hash
-    #make role an object?
+    # Should confirm correct conditions (e.g. turn ==0)?
+    # update these counts later so they are based on @rules hash
+    # make role an object?
     # werewolf_count = (self.players.count/self.rules[:wolf_ratio]).round
     # seer_count = (self.players.count/self.rules[:seer_ratio]).round
     # angel_count = (self.players.count/self.rules[:angel_ratio]).round
-    werewolf_count = (players.count/5.0).round
-    seer_count = (players.count/10.0).round
-    angel_count = (players.count/10.0).round
+    werewolf_count = (players.count/4.6).round
+    seer_count = (players.count/11.0).round
+    angel_count = (players.count/13.0).round
     
     # this is gross. make it nicer!
     self.players.shuffle.each_with_index do |player, index|
@@ -105,9 +105,7 @@ class Game < ActiveRecord::Base
     self.state == "finished"
   end
   
-  def end_turn
-    self.advance_turn
-    
+  def end_turn    
     # check if victory conditions have been met
     werewolf_count = self.role_count[:werewolf]
     if werewolf_count == 0
@@ -119,6 +117,7 @@ class Game < ActiveRecord::Base
       self.game_over("werewolves")
       return
     end
+    self.advance_turn
   end
   
   def game_over(winners)

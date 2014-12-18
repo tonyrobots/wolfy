@@ -39,10 +39,10 @@
 	<% end %>
 	
 	<% if @game.state == "finished" %>
-		<div class="">
-			The <%= @game.winner %> have won!
+		<div class="well well-lg">
+			<h3>The <%= @game.winner %> have won!</h3>
+			<%= link_to "View Game Logs", game_logs_path(@game) %>
 		</div>
-		<%= link_to "View Game Logs", game_logs_path(@game) %>
 	<% end %>
 </p>
 <div class="row">
@@ -53,7 +53,7 @@
 		<% for player in @game.players.living.order("alias ASC") %>
 			<% is_self = (current_player(@game) == player) %>
 				<tr class="<%= "self" if is_self %>"><td>			
-					<%= render "games/action", player: player if current_player(@game).alive%>
+					<%= render "games/action", player: player if current_player(@game).alive and not @game.state == "finished" %>
 				</td>
 				<td style="vertical-align:middle">
 					<%if is_self %><strong>
