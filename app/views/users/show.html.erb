@@ -1,0 +1,26 @@
+<h1><%=@user.username%></h1>
+
+<% if @user.stats%>
+   <!-- Played <%= @user.stats.played_count%> games, and won <%= @user.stats.wins_count%> for a
+	<%= number_to_percentage(@user.stats.wins_count.to_f/@user.stats.played_count) %> winning record. -->
+	<table class="table table-striped">
+		<tr class="user_stats">
+			<td>Games played:</td>
+			<td><%= @user.stats.played_count %></td>
+		</tr>
+		<tr class="user_stats">
+			<td>Games won:</td>
+			<td><%= @user.stats.wins_count %> 
+				(<%= number_to_percentage((@user.stats.wins_count.to_f/@user.stats.played_count) *100)%>) 
+			</td>
+		</tr>
+		<tr class="user_stats">
+			<td>Games survived to end:</td>
+			<td><%= @user.stats.survived_count %>
+				(<%= number_to_percentage((@user.stats.survived_count.to_f/@user.stats.played_count) *100)%>) </td>
+		</tr>
+	</table>
+<% else %>
+   This user hasn't played any games yet.
+<% end %>
+

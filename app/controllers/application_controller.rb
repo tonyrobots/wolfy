@@ -2,6 +2,8 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
+  before_action :configure_permitted_parameters, if: :devise_controller?
+  
   
   def current_player(game)
     if current_user
@@ -10,32 +12,17 @@ class ApplicationController < ActionController::Base
   end
   helper_method :current_player
   
-  def add_message(game, msg, player = false)
-    # TODO cleanup
-    # DON'T USE, CHECK MODEL METHOD
-    @comment = game.comments.build(game_id:game.id, body:msg)
-    @comment.save
-    if player
-      channel = "channel-p-#{player.id}"
-    else
-      channel = "/channel-#{game.id}"
+  protected
+  def validate_admin_user
+    unless user_signed_in? and current_user.admin 
+      redirect_to root_path
     end
-    payload = { message: render_to_string(@comment)}
-    broadcast(channel, payload)
   end
   
-  def broadcast(channel, payload)
-    # DON'T USE -- USE MODEL VERSION INSTEAD
-    # if you have problems look into event machine start
-    base_url = request ? request.base_url : "http://localhost:7777"
-    #client = Faye::Client.new("#{base_url}/faye")
-    #client.publish(channel, payload )
-    bayeux.get_client.publish(channel, payload )
-  end
-  
-  def commentify_system_message(game, msg)
-    #abandoned for now
-    comment = Comment.new
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.for(:sign_up) { |u| u.permit(:username, :email, :password, :password_confirmation, :remember_me) }
+    devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:login, :username, :email, :password, :remember_me) }
+    devise_parameter_sanitizer.for(:account_update) { |u| u.permit(:username, :email, :password, :password_confirmation, :current_password) }
   end
   
 end

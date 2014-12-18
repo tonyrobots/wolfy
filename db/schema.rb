@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141215234058) do
+ActiveRecord::Schema.define(version: 20141218010739) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,17 +36,20 @@ ActiveRecord::Schema.define(version: 20141215234058) do
     t.string   "action"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "turn"
   end
 
   add_index "event_logs", ["game_id"], name: "index_event_logs_on_game_id", using: :btree
 
   create_table "games", force: true do |t|
     t.string   "name"
-    t.integer  "turn",       default: 0
-    t.string   "state"
+    t.integer  "turn",        default: 0
+    t.string   "state",       default: "Unstarted"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "creator_id"
+    t.text     "description"
+    t.string   "winner"
   end
 
   create_table "messages", force: true do |t|
@@ -101,22 +104,25 @@ ActiveRecord::Schema.define(version: 20141215234058) do
   end
 
   create_table "users", force: true do |t|
-    t.string   "email",                  default: "", null: false
-    t.string   "encrypted_password",     default: "", null: false
+    t.string   "email",                  default: "",    null: false
+    t.string   "encrypted_password",     default: "",    null: false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          default: 0,  null: false
+    t.integer  "sign_in_count",          default: 0,     null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "admin",                  default: false
+    t.string   "username",               default: ""
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+  add_index "users", ["username"], name: "index_users_on_username", using: :btree
 
   create_table "votes", force: true do |t|
     t.integer  "game_id"

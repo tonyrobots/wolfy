@@ -38,9 +38,10 @@ namespace :debug do
   task :add_players => :environment do
     desc "fill game with random players"
     game_id = ENV['game_id'] || 1
-    puts "Filling game #{game_id} with random players..."
+    number = ENV['num'].to_i || 7
+    puts "Filling game #{game_id} with #{number} random players..."
     game = Game.find(game_id)
-    8.times do |i|
+    number.times do |i|
       player_name = Faker::Name.name
       Player.create(alias: player_name, game_id: game.id, user_id: "#{i+3}")
       puts "Created #{player_name} and added to #{game.name}"

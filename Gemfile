@@ -30,6 +30,7 @@ gem 'devise'
 gem 'thin'
 gem 'pg'
 gem 'faker'
+gem 'will_paginate'
 
 # chat
 gem 'faye-rails'

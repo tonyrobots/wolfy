@@ -17,11 +17,8 @@ class GamesController < ApplicationController
     else
       if params[:alias].present?
         player_alias = params[:alias].strip
-      else
-        player_alias = Faker::Name.name
       end
-      @player = @game.players.build(:user => current_user, :alias => player_alias)
-      @game.log_and_add_message("#{player_alias} has joined the game.")
+      current_user.join(@game,player_alias)
       @game.reload_clients
       respond_to do |format|
         if @player.save
@@ -36,13 +33,8 @@ class GamesController < ApplicationController
   end
   
   def start
-    # TODO this looks like it could be vulnerable to players restarting games
-    min_players = 7
-    if @game.players.count < min_players 
-      flash[:warning] = "Oops! You need at least #{min_players} players to start."
-    elsif @game.turn != 0
-      flash[:warning] = "Hmm. That game has already started, or is already over."
-    else
+    # TODO message to user why the game can't start?
+    if @game.ready_to_start?
       @game.start
       flash[:success] = "The game has begun!"
     end
@@ -54,7 +46,9 @@ class GamesController < ApplicationController
   def index
     @open_games = Game.where(turn:0)
     if current_user
-      @user_games = current_user.games
+      @user_games = current_user.games.where.not(state:"finished")
+      @open_games = @open_games.where.not(:id => current_user.players.select(:game_id).uniq)
+      @recently_finished = current_user.games.where(state:"finished").where("games.updated_at < ?", 1.week.ago)
     end
   end
 
@@ -64,6 +58,8 @@ class GamesController < ApplicationController
     @votee = current_player(@game).voted_for
     @comment = Comment.new
     @comments = current_player(@game).readable_comments
+    # all this sorting is to make sure there is no information passed by the order of roles presented in list:
+    @remaining_count = @game.players.living.group(:role).count.sort.reverse.sort_by { |x| x[1] }.reverse
     gon.channel = "/channel-#{@game.id}"
     gon.private_channel = "/channel-p-#{current_player(@game).id}"
   end
@@ -121,11 +117,11 @@ class GamesController < ApplicationController
   def create
     @game = Game.new(game_params)
     @game.creator_id = current_user.id
-    #TODO creator should automatically join game?
     
     respond_to do |format|
       if @game.save
-        format.html { redirect_to @game, notice: 'Game was successfully created.' }
+        current_user.join(@game)
+        format.html { redirect_to @game }
         format.json { render action: 'show', status: :created, location: @game }
       else
         format.html { render action: 'new' }
@@ -166,7 +162,7 @@ class GamesController < ApplicationController
         
     # Never trust parameters from the scary internet, only allow the white list through.
     def game_params
-      params.require(:game).permit(:name, :turn, :state)
+      params.require(:game).permit(:name, :turn, :state, :description)
     end
     
     def players_only

@@ -80,6 +80,15 @@ class Game < ActiveRecord::Base
     turn > 0
   end
   
+  def min_players
+    # later this will be based on game options, roles, etc.
+    6
+  end
+  
+  def ready_to_start?
+    self.players.count >= self.min_players and not self.started?
+  end
+  
   def is_day?
     turn > 0 && (turn % 2) == 1
   end
@@ -97,7 +106,9 @@ class Game < ActiveRecord::Base
   end
   
   def end_turn
-    #first, check if victory conditions have been met
+    self.advance_turn
+    
+    # check if victory conditions have been met
     werewolf_count = self.role_count[:werewolf]
     if werewolf_count == 0
       # villagers win!
@@ -108,14 +119,11 @@ class Game < ActiveRecord::Base
       self.game_over("werewolves")
       return
     end
-    self.advance_turn
-    
   end
   
   def game_over(winners)
     msg = "The game is over! The #{winners} have won!"
-    self.update(state:"finished")
-    # add field to game with winner info, update that
+    self.update(state:"finished", winner:winners)
     good_guys_won = winners != "werewolves"
     for player in self.players
       player.record_stats(good_guys_won == player.good_guy?,player.alive)

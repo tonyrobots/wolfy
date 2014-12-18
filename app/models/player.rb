@@ -18,6 +18,10 @@ class Player < ActiveRecord::Base
   validates :alias, uniqueness: { scope: :game_id,
       message: "That alias is already being used in this game." }
   
+  def to_s
+    self.alias
+  end
+  
   def channel
     "/channel-p-#{self.id}"
   end

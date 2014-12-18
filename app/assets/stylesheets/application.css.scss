@@ -21,11 +21,11 @@ $border-radius-base:        0px;
 $border-radius-large:       0px;
 $border-radius-small:       0px;
 $headings-font-family: 'Raleway', sans-serif;
-
+$link-color:   #555;
+$link-hover-decoration: underline;
 
 @import "bootstrap-sprockets";
 @import "bootstrap";
-
 
 .player {
 	padding: 5px;
@@ -48,7 +48,7 @@ $headings-font-family: 'Raleway', sans-serif;
 }
 
 .self {
-	background: #99ff99;
+	background-color: #ddffda !important;
 }
 
 .voters {
@@ -60,4 +60,9 @@ $headings-font-family: 'Raleway', sans-serif;
 .vote_count {
 	color:maroon;
 	font-size:24pt;
+}
+
+.game_description {
+	color: #888888;
+	font-size: 18pt;
 }

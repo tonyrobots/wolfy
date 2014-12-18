@@ -1,7 +1,12 @@
 class EventLogsController < ApplicationController
   def index
     set_game
-    @logs = @game.event_logs.order("created_at ASC")
+    if @game.state == "finished"
+      @logs = @game.event_logs.order("created_at ASC")
+    else
+      flash[:danger] = "You can't view game logs until the game is over, cheater!"
+      redirect_to @game
+    end
   end
     
   private

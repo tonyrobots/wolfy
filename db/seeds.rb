@@ -8,14 +8,14 @@
 
 
 
-User.create(email: "tonyzito@gmail.com", password: "coffee")
+User.create(email: "tonyzito@gmail.com", username:"tony", password: "coffee", admin:true)
 puts "created tonyzito@gmail.com user"
 
-User.create(email: "tonyzito+2@gmail.com", password: "coffee")
+User.create(email: "tonyzito+2@gmail.com", username:"tonyrobots", password: "coffee")
 puts "created tonyzito+2@gmail.com user"
 
 10.times do |i|
-  User.create(email: "email#{i}@test.com", password: "test")
+  User.create(email: "email#{i}@test.com", username:"test#{i}", password: "test")
 end
 
 game = Game.create(name: "New Game", creator_id: 1)

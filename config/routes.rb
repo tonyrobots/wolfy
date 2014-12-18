@@ -9,8 +9,8 @@ Werewolf::Application.routes.draw do
   post 'games/:id/move' => 'games#move', as: "move"
   
   resources :comments, only: [:new, :create]
-
   devise_for :users
+  resources :users
   root :to => "games#index"
   
   

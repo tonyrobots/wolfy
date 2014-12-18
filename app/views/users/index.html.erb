@@ -1,0 +1,40 @@
+<% if @search %> 
+	<h2><%=@users.count%> matches for "<%= @search %>" <small> <%= link_to "see all instead", users_path %></small></h2>
+<%else%>
+	<h2>Total Users: <%=@users.count%></h2>
+<%end%>
+
+<%=form_tag("users", :method=>"get") do%>
+ <div class="input-group">
+  <%=text_field_tag 'search', @search, class:"form-control", placeholder:"Search by email or user name" %>
+  <span class="input-group-btn"><%=submit_tag 'Search Users', class:"btn btn-default"%></span>
+ </div>
+<%end%>
+<hr>
+<% if @users.empty? %>
+	<h3>No users found.</h3>
+<% else %>
+	<table class="table table-condensed table-striped">
+		<tr>
+			<th>id</th>
+			<th><%=link_to "Registered at", users_path(:sort_by=>"created_at") %></th>
+			<th>username</th>
+			<th>E-mail</th>
+			<th></th>
+			<th></th>
+			<th></th>
+		</tr>
+	<% for user in @users %>
+		<tr>
+			<td><%= user.id %></td>
+			<td><%= user.created_at.strftime("%b %d - %l:%M:%S %p") %></td>
+			<td><%= link_to user.username, user %></td>
+			<td><%= user.email %></td>
+        <td><%= link_to 'Show', user %></td>
+        <td><%= link_to 'Edit', edit_user_path(user) %></td>
+        <td><%= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+
+		</tr>
+	<% end %>
+	</table>	
+<%end%>
