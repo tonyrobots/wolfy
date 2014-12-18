@@ -49,39 +49,7 @@
    <div class="col-xs-6">
 		<p>
 		<h3>Players:</h3>
-		<table class="table table-striped">
-		<% for player in @game.players.living.order("alias ASC") %>
-			<% is_self = (current_player(@game) == player) %>
-				<tr class="<%= "self" if is_self %>"><td>			
-					<%= render "games/action", player: player if current_player(@game).alive and not @game.state == "finished" %>
-				</td>
-				<td style="vertical-align:middle">
-					<%if is_self %><strong>
-						<span class="rest-in-place" data-url="<%= "/players/#{player.id}" %>" data-object="player" data-attribute="alias" data-placeholder="Enter a new alias">
-						<%= player.alias %>
-					</span></strong>
-					<% else %>
-						<%= player.alias %> 
-					<% end %>
-					<% if (@game.started? and (current_player(@game).knows_about? player or is_self) or @game.is_over?) %>
-						(<%= player.role %>)
-						<% if @game.is_over? %>
-							- <%= link_to player.user, player.user %>
-						<% end %>
-					<% end %><br />
-					<% if @game.is_day? and player.votes_for.where(turn:@game.turn).count > 0 %>
-						<div class="voters">
-							Voted for by <%=  player.votes_for.where(turn:@game.turn).map { |vote| vote.voter.alias }.to_sentence %>.
-						</div>
-					<%end%>
-				</td>
-				<td><% if @game.is_day? and player.votes_for.where(turn:@game.turn).count > 0 %>
-					<div class="vote_count"> <%= player.votes_for.where(turn:@game.turn).count %></div>
-					<% end %>
-				</td>
-			</tr>
-		<% end %>
-	</table>
+				<%= render "games/living_players"%>
 		</p>
 		<% if @game.players.dead.count > 0 %>
 			<p><h4>Dead:</h4>

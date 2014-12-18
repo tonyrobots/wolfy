@@ -1,13 +1,14 @@
 <%if @game.started? %>
 	<% if @game.is_day? %>
-		<% unless player == current_player(@game) %>
-				<% if !@votee or @votee.id != player.id %>
-				<%= link_to "Vote", vote_path(votee_id:player.id), class:"btn-default btn vote" %>
-				<% else %>
-				remove vote
-				<% end %>
+		<% if player == current_player(@game) %>
+			* You *
+		<% else %>
+			<% if !@votee or @votee.id != player.id %>
+			<%= link_to "Vote", vote_path(votee_id:player.id), class:"btn-default btn vote", :remote => true  %>
+			<% else %>
+			<%  #TODO remove vote %>
+			<% end %>
 		<% end %>
-		<%= " You! " if player == current_player(@game)%>
 	<% else # if it's night %>
 		<% unless current_player(@game).role == "villager" %>
 		   <% move = MOVES[current_player(@game).role] %>

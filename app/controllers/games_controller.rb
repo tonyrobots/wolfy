@@ -12,8 +12,9 @@ class GamesController < ApplicationController
       logger.error "Attempt by non-logged in user to join game #{@game.id}"
       redirect_to game_url, :alert => "You need to be logged in to join."
     elsif @game.users.include?(current_user)
+      # TODO this seems to be firing when users try to join games -- they join successfully, but this condition is met. Look into it.
       logger.error "User #{current_user.id} tried to join game #{@game.id} twice."
-      redirect_to game_url, :alert => "You are already in that game!"
+      redirect_to game_url
     else
       if params[:alias].present?
         player_alias = params[:alias].strip
@@ -22,7 +23,7 @@ class GamesController < ApplicationController
       @game.reload_clients
       respond_to do |format|
         if @player.save
-          format.html { redirect_to @game, notice: 'Player was successfully created.' }
+          format.html { redirect_to @game }
           format.json { render action: 'show', status: :created, location: @game }
         else
           format.html { render action: 'new' }
@@ -75,21 +76,24 @@ class GamesController < ApplicationController
   
   def vote
     if @game.started? and @game.is_day?
-      votee = Player.find(params[:votee_id])
+      @votee = Player.find(params[:votee_id])
       voter = current_player(@game)
-      if voter.voted_for and voter.voted_for != votee
-        msg = "#{voter.alias} changed vote from #{voter.voted_for.alias} to #{votee.alias}."
+      voter.vote_for(@votee)
+      if voter.voted_for and (voter.voted_for != @votee)
+        msg = "#{voter.alias} changed vote from #{voter.voted_for.alias} to #{@votee.alias}."
       else
-        msg = "#{voter.alias} voted for #{votee.alias}."
+        msg = "#{voter.alias} voted for #{@votee.alias}."
       end
       @game.log_and_add_message(msg)
-      voter.vote_for(votee)
       @game.count_votes
       @game.reload_clients
     else
       flash.alert = "You can't vote now!"
     end
-    redirect_to @game
+    respond_to do |format|
+      #format.html { redirect_to @game }
+      format.js
+    end
   end
 
   def move

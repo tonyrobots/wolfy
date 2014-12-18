@@ -58,8 +58,8 @@ end
 # Use Capistrano for deployment
 # gem 'capistrano', group: :development
 
-# Use debugger
-# gem 'debugger', group: [:development, :test]
+# Debugger
+gem 'byebug', group: [:development, :test]
 
 # for heroku:
 gem 'rails_12factor', group: :production
