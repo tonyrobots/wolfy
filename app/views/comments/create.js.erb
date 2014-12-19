@@ -1,8 +1,15 @@
-<% unless @private or @error %>
+<% if @error %>
+	$('#comment_body').val('');
+<% elsif @private %>
+publisher = client.publish("<%= @comment.target.channel %>", {
+  message: '<%= j render @comment %>'
+});
+<% else %>
 publisher = client.publish(gon.channel, {
   message: '<%= j render @comment %>'
 });
-<%end%>	
+<%end%>
+
 publisher.callback(function() {
   $('#comment_body').val('');
   $('#new_comment').find("input[type='submit']").val('Submit').prop('disabled', false)

@@ -27,8 +27,8 @@ class Player < ActiveRecord::Base
   end
   
   def readable_comments
-    @comments = self.game.comments.public + self.comments_to
-    @comments.sort_by(&:created_at).reverse
+    @comments = self.game.comments.public + self.comments_to + self.comments.where.not(target_id:nil)
+    @comments.uniq.sort_by(&:created_at).reverse
     #@comments = self.game.comments.public.merge(self.comments_to)
   end
   
@@ -133,7 +133,11 @@ class Player < ActiveRecord::Base
       @comment = Comment.new(game_id:self.game_id, body:msg, created_at:Time.now, target_id:self.id)
     end
     @comment.save
-    payload = { message: ApplicationController.new.render_to_string(@comment)}
+    private_send(@comment)
+  end
+  
+  def private_send(comment)
+    payload = { message: ApplicationController.new.render_to_string(comment)}
     self.broadcast(self.channel, payload)
   end
   

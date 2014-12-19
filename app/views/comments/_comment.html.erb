@@ -3,7 +3,7 @@
     <strong>
  		<% if comment.target and comment.player %>
 		   <% type='private-comment'%>
-			<%= comment.player.alias %>:
+			<%= comment.player.alias %> to <%=comment.target.alias%> (private):<br/>
 		<% elsif comment.player %>
 			<% type='player-comment' %>
 		 	<%= comment.player.alias %>:
