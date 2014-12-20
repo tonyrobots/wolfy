@@ -7,7 +7,7 @@
 	  <% end %>
   </h2>
 	  <% unless @game.started? %> 
-	  	<span class="rest-in-place game_description" data-url="<%= @game %>" data-object="game" data-attribute="description" data-formtype="textarea">
+	  	<span class="<% if current_user_is_creator %>rest-in-place<%end%> game_description" data-url="<%= @game %>" data-object="game" data-attribute="description" data-formtype="textarea">
 			<%= @game.description%>
 		</span>
 	  <% end %>
