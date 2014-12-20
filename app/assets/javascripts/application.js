@@ -17,5 +17,6 @@
 //= require jquery.turbolinks
 //= require 'rest_in_place'
 //= require faye
+//= require browser_timezone_rails/application.js
 //= require comments
 //= require_tree .

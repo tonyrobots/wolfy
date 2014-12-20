@@ -31,6 +31,7 @@ gem 'thin'
 gem 'pg'
 gem 'faker'
 gem 'will_paginate'
+gem 'browser-timezone-rails'
 
 # chat
 gem 'faye-rails'
