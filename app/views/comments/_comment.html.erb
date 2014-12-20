@@ -4,6 +4,9 @@
  		<% if comment.target and comment.player %>
 		   <% type='private-comment'%>
 			<%= comment.player.alias %> to <%=comment.target.alias%> (private):<br/>
+		<% elsif not comment.target_role.blank? %>
+			<% type='private-comment'%>
+			<%= comment.player.alias %> to <%= (comment.target_role).pluralize(2) %>:
 		<% elsif comment.player %>
 			<% type='player-comment' %>
 		 	<%= comment.player.alias %>:

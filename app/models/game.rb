@@ -230,11 +230,9 @@ class Game < ActiveRecord::Base
     self.broadcast(channel, payload)
   end
   
-  def broadcast_to_role(role, msg, sender=false)
-    for player in self.players.living
-      if player.role == role
-        player.private_message(msg, sender)
-      end
+  def broadcast_comment_to_role(comment, role)
+    for player in self.players.living.where(role: role)
+      player.private_send(comment)
     end
   end
   

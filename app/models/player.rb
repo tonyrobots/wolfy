@@ -27,7 +27,7 @@ class Player < ActiveRecord::Base
   end
   
   def readable_comments
-    @comments = self.game.comments.public + self.comments_to + self.comments.where.not(target_id:nil)
+    @comments = self.game.comments.public + self.comments_to + self.comments.where.not(target_id:nil) + self.game.comments.where(target_role:self.role)
     @comments.uniq.sort_by(&:created_at).reverse
     #@comments = self.game.comments.public.merge(self.comments_to)
   end
@@ -44,14 +44,12 @@ class Player < ActiveRecord::Base
     msg = "#{self.alias} (#{self.role}) is now DEAD."
     self.alive = false
     self.save
-    self.game.log_event msg
-    self.game.add_message msg
+    self.game.log_and_add_message msg
   end
   
   def lynch
     msg = "#{self.alias} was voted for lynching."
-    self.game.log_event msg
-    self.game.add_message msg
+    self.game.log_and_add_message msg
     self.kill
   end
   
@@ -119,6 +117,14 @@ class Player < ActiveRecord::Base
         @move = self.moves.build(target:target,game_id:self.game.id,turn:self.game.turn,action:"protect")
         @move.save
       end
+    end
+  end
+  
+  def can_pm_to
+    if self.role == "werewolf"
+      [["Werewolves", "werewolves"]]
+    elsif self.role == "seer"
+      self.game.players.living.pluck(:alias, :id)
     end
   end
   

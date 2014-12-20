@@ -2,6 +2,8 @@
 <%= form_for @comment, remote: true do |f| %>
     <div class="form-group">
 		<%= hidden_field_tag :game_id, @game.id %>
+		<% if @comment_targets and @comment_targets.count > 0 %>Send message to: <%= select_tag(:target, options_for_select(@comment_targets)) %><% end %>
+		
       <%= f.text_field :body, class: 'form-control', required: true, size:50, placeholder:"Enter your message" %>
 		<% # f.select(:target) %>
 		<% # options_from_collection_for_select(@game.players.living, :id, :alias) %>

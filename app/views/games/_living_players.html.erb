@@ -12,6 +12,9 @@
 						<%= player.alias %>
 					</span></strong>
 					<% else %>
+					<!-- <button type="button" class="btn btn-default btn-xs pm-button" id="pm-<%=player.id%>" data="/p <%= player.alias%>">
+						<span class="glyphicon glyphicon-comment"></span> PM
+					</button> -->
 						<%= player.alias %> 
 					<% end %>
 					<% if (@game.started? and (current_player(@game).knows_about? player or is_self) or @game.is_over?) %>

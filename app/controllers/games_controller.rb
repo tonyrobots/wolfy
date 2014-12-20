@@ -56,9 +56,13 @@ class GamesController < ApplicationController
   # GET /games/1
   # GET /games/1.json
   def show
-    @votee = current_player(@game).voted_for
+    player = current_player(@game)
+    @votee = player.voted_for
     @comment = Comment.new
-    @comments = current_player(@game).readable_comments
+    @comments = player.readable_comments
+    if player.can_pm_to
+      @comment_targets = [["Everyone", nil]] + player.can_pm_to
+    end
     # all this sorting is to make sure there is no information passed by the order of roles presented in list:
     @remaining_count = @game.players.living.group(:role).count.sort.reverse.sort_by { |x| x[1] }.reverse
     gon.channel = "/channel-#{@game.id}"
@@ -78,12 +82,12 @@ class GamesController < ApplicationController
     if @game.started? and @game.is_day?
       @votee = Player.find(params[:votee_id])
       voter = current_player(@game)
-      voter.vote_for(@votee)
       if voter.voted_for and (voter.voted_for != @votee)
         msg = "#{voter.alias} changed vote from #{voter.voted_for.alias} to #{@votee.alias}."
       else
         msg = "#{voter.alias} voted for #{@votee.alias}."
       end
+      voter.vote_for(@votee)
       @game.log_and_add_message(msg)
       @game.count_votes
       @game.reload_clients

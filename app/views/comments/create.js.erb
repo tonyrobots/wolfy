@@ -1,4 +1,4 @@
-<% if @error %>
+<% if @squelch %>
 	$('#comment_body').val('');
 <% elsif @private %>
 publisher = client.publish("<%= @comment.target.channel %>", {
