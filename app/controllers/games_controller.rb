@@ -146,13 +146,15 @@ class GamesController < ApplicationController
   # PATCH/PUT /games/1
   # PATCH/PUT /games/1.json
   def update
-    respond_to do |format|
-      if @game.update(game_params)
-        format.html { redirect_to @game, notice: 'Game was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: 'edit' }
-        format.json { render json: @game.errors, status: :unprocessable_entity }
+    if @game.creator == current_user
+      respond_to do |format|
+        if @game.update(game_params)
+          format.html { redirect_to @game }
+          format.json { head :no_content }
+        else
+          format.html { render action: 'edit' }
+          format.json { render json: @game.errors, status: :unprocessable_entity }
+        end
       end
     end
   end
