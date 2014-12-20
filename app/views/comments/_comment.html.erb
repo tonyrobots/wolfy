@@ -13,6 +13,6 @@
 		<% else type='system-comment'%>
 		<% end %></strong> 
 		<span class="<%=type%>"><%= comment.body %></span><br />
-      <small class="text-muted">[<%= time_ago_in_words comment.created_at %> ago]</small>
+      <small class="text-muted">[<%=l comment.created_at %> ]</small>
   </div>
 </li>

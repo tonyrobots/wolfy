@@ -2,6 +2,8 @@
 
 TO DO:
 
+don't show 'reveal' action on players who are already known
+
 DEAD PLAYERS CAN'T MOVE! - done on front end, need to validate on backend
 
 X Implement seer knowldege persistence - done
@@ -10,9 +12,9 @@ if all players have voted, and one player (alone) has most votes, they are off
 
 X Make roles private (unless known to seer)
 
-Private messaging for seers
+X Private messaging for seers
 
-pull down for private messaging
+X pull down for private messaging
 
 X Private messaging (howl) for werewolves -- CHANGE TARGET ON COMMENTS TO ARRAY TYPE, REFACTOR BROADCAST TO ROLE
 
