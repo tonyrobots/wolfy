@@ -32,6 +32,7 @@ gem 'pg'
 gem 'faker'
 gem 'will_paginate'
 gem 'browser-timezone-rails'
+gem 'newrelic_rpm'
 
 # chat
 gem 'faye-rails'

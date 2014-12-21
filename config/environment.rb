@@ -9,5 +9,3 @@ MOVES ={
   "seer" => "reveal",
   "angel" => "protect"
 }
-
-START_AT_NIGHT = false
