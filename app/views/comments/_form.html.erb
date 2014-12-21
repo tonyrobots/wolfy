@@ -1,4 +1,4 @@
-<div class="well">
+<div class="well <%= "hidden" unless current_player(@game).alive %>">
 <%= form_for @comment, remote: true do |f| %>
     <div class="form-group">
 		<%= hidden_field_tag :game_id, @game.id %>
