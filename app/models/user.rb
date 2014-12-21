@@ -28,7 +28,7 @@ class User < ActiveRecord::Base
     player_alias ||=  Faker::Name.name
     @player = game.players.build(:user => self, :alias => player_alias)
     @player.save
-    game.log_and_add_message("#{player_alias} has joined the game.")
+    game.log_and_add_message("Someone has joined the game.")
   end
   
   def self.find_first_by_auth_conditions(warden_conditions)

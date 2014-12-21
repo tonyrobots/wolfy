@@ -4,7 +4,13 @@ TO DO:
 
 don't show 'reveal' action on players who are already known
 
-dead players shouldn't be able to chat either
+add facebook metadata
+
+add facebook/twitter login
+
+add appropriate page titles
+
+X dead players shouldn't be able to chat either (done on front end)
 
 DEAD PLAYERS CAN'T MOVE! - done on front end, need to validate on backend
 
