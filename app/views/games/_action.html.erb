@@ -6,7 +6,7 @@
 			<% if !@votee or @votee.id != player.id %>
 			<%= link_to "Vote", vote_path(votee_id:player.id), class:"btn-default btn vote", :remote => true  %>
 			<% else %>
-				<div class="center-block"><span class="glyphicon glyphicon-ok text-warning large"></span></div>
+				<div class="center-block"><span class="glyphicon glyphicon-ok large" style="margin-left:15px; color:red;margin-top:5px"></span></div>
 			<% end %>
 		<% end %>
 	<% else # if it's night %>
