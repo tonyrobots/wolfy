@@ -90,28 +90,11 @@ class Game < ActiveRecord::Base
   end
   
   def is_day?
-    # TODO make this nicer.
-    if START_AT_NIGHT
-      if self.turn > 0
-        (self.turn % 2) == 0
-      else
-        return FALSE
-      end
-    else
-      turn > 0 && (turn % 2) == 1
-    end
+    turn > 0 && ((turn % 2 == 0) == START_AT_NIGHT)
   end
   
   def is_night?
-    if START_AT_NIGHT
-      turn > 0 && (turn % 2) == 1
-    else
-      if self.turn > 0
-        (self.turn % 2) == 0
-      else
-        return FALSE
-      end
-    end
+    turn > 0 && ((turn % 2) == 0) != START_AT_NIGHT
   end
   
   def is_over?

@@ -10,4 +10,4 @@ MOVES ={
   "angel" => "protect"
 }
 
-START_AT_NIGHT = true
+START_AT_NIGHT = false
