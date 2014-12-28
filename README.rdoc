@@ -10,6 +10,17 @@ add facebook/twitter login
 
 add appropriate page titles
 
+players can delete their last comment (?)
+
+"your current games" in nav
+
+login form in top nav
+
+intro/login modal
+
+bigger login/sign up form
+
+email nudges for slow players
 X dead players shouldn't be able to chat either (done on front end)
 
 DEAD PLAYERS CAN'T MOVE! - done on front end, need to validate on backend
