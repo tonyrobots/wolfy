@@ -45,11 +45,8 @@ class GamesController < ApplicationController
   # GET /games
   # GET /games.json
   def index
-    @open_games = Game.where(turn:0)
     if current_user
-      @user_games = current_user.games.where.not(state:"finished")
-      @open_games = @open_games.where.not(:id => current_user.players.select(:game_id).uniq)
-      @recently_finished = current_user.games.where(state:"finished").where("games.updated_at < ?", 1.week.ago)
+      @recently_finished = current_user.games.where(state:"finished").where("games.updated_at > ?", 4.weeks.ago).order("games.updated_at DESC").limit(5)
     end
   end
 

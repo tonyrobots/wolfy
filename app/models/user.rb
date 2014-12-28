@@ -20,6 +20,10 @@ class User < ActiveRecord::Base
     self.username
   end
   
+  def current_games
+    self.games.where.not(state:"finished")
+  end
+  
   def is_playing?(game)
     game.users.include? self
   end

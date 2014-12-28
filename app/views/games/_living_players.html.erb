@@ -4,7 +4,7 @@
 		<div id="player-<%=player.id %>">
 			<% is_self = (current_player(@game) == player) %>
 				<tr class="<%= "self" if is_self %>"><td>			
-					<%= render "games/action", player: player if current_player(@game).alive and not @game.state == "finished" %>
+					<%= render "games/action", {player: player, is_self:is_self} if current_player(@game).alive and not @game.state == "finished" %>
 				</td>
 				<td style="vertical-align:middle">
 					<%if is_self %><strong>

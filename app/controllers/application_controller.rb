@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :set_open_games
   
   
   def current_player(game)
@@ -11,6 +12,13 @@ class ApplicationController < ActionController::Base
     end
   end
   helper_method :current_player
+  
+  def set_open_games
+    @open_games = Game.where(turn:0)
+    if current_user
+      @open_games = @open_games.where.not(:id => current_user.players.select(:game_id).uniq)
+    end
+  end
   
   protected
   def validate_admin_user

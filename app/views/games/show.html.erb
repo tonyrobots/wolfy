@@ -42,7 +42,7 @@
 	<% if @game.state == "finished" %>
 		<div class="well well-lg">
 			<h3>The <%= @game.winner %> have won!</h3>
-			<%= link_to "View Game Logs", game_logs_path(@game) %>
+			<%= link_to "View Game Logs", game_logs_path(@game), class:"btn btn-info" %>
 		</div>
 	<% end %>
 </p>
@@ -76,5 +76,3 @@
 	</div>
 </div>
 </div>
-
-	<%= link_to '<-Back to games list', games_path %>

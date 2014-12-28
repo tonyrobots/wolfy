@@ -46,7 +46,7 @@
 	    <% @recently_finished.each do |game| %>
 	      <tr>
 	        <td><h4><% if current_user.try(:is_playing?,game)%><%= link_to game.name, game %><% else %><%= game.name %><% end %></h4></td>
-	        <td><%= game.updated_at %></td>
+	        <td><%=l game.updated_at %></td>
 	        <td><%= game.winner %></td>
 	      </tr>
 	    <% end %>
