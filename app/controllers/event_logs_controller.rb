@@ -2,7 +2,7 @@ class EventLogsController < ApplicationController
   def index
     set_game
     if @game.state == "finished"
-      @logs = @game.event_logs.order("created_at ASC")
+      @logs_by_turn = @game.event_logs.order("created_at ASC").group_by {|log| log.turn}
     else
       flash[:danger] = "You can't view game logs until the game is over, cheater!"
       redirect_to @game

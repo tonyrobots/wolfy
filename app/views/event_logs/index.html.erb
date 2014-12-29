@@ -1,5 +1,15 @@
-	<table class="table table-striped">
-		<% @logs.each do |log| %>
-			<tr><td> <%= log.text %></td></tr>
-		<% end %>
-	</table>
+<table class="table table-condensed">
+	<%  @logs_by_turn.each do |turn, turn_logs| %>	
+
+			<tr>
+				<td><div style="color:#aaaaaa; font-size:38pt"><%= turn_logs.first.turn %></div></td>
+				<td>
+					<table class="table table-striped">
+						<% turn_logs.each do |log| %>
+							<tr><td><%= log.text %></td></tr>
+						<% end %>
+					</table>
+				</td>
+			</tr>
+	<% end %>
+</table>

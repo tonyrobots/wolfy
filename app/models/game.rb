@@ -211,7 +211,7 @@ class Game < ActiveRecord::Base
   end
   
   def log_event(text)
-    EventLog.create(:game_id => self.id, :text => text)
+    EventLog.create(:game_id => self.id, :text => text, turn: self.turn)
   end
   
   def add_message(msg, player=false)

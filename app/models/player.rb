@@ -1,6 +1,6 @@
 class Player < ActiveRecord::Base
   
-  include Broadcast
+  #include Broadcast
   
   belongs_to :user
   belongs_to :game
@@ -144,7 +144,7 @@ class Player < ActiveRecord::Base
   
   def private_send(comment)
     payload = { message: ApplicationController.new.render_to_string(comment)}
-    self.broadcast(self.channel, payload)
+    self.game.broadcast(self.channel, payload)
   end
   
   def knows_about?(target)

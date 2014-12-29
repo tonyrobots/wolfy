@@ -38,13 +38,26 @@ namespace :debug do
   task :add_players => :environment do
     desc "fill game with random players"
     game_id = ENV['game_id'] || 1
-    number = ENV['num'].to_i || 7
+    number = ENV['num'].to_i || 7 #this doesn't work because nil.to_i == 0
     puts "Filling game #{game_id} with #{number} random players..."
     game = Game.find(game_id)
     number.times do |i|
       player_name = Faker::Name.name
       Player.create(alias: player_name, game_id: game.id, user_id: "#{i+3}")
       puts "Created #{player_name} and added to #{game.name}"
+    end
+  end
+  
+  task :advance => :environment do
+    game = Game.last
+    ENV['game_id'] = game.id.to_s
+    if game.is_day?
+      Rake::Task["debug:vote"].invoke
+    elsif game.is_night?
+      Rake::Task["debug:night_moves"].invoke
+    elsif not game.started?
+      ENV['num'] = "7"
+      Rake::Task["debug:add_players"].invoke
     end
   end
 end
