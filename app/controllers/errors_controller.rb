@@ -1,7 +1,7 @@
 class ErrorsController < ApplicationController
  
   def show
-    render error, :status => status_code
+    @code = status_code
   end
  
 protected
