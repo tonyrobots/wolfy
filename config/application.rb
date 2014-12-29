@@ -24,5 +24,9 @@ module Werewolf
     config.middleware.delete Rack::Lock
     config.middleware.use FayeRails::Middleware, extensions: [CsrfProtection.new], mount: '/faye', :timeout => 25
     config.autoload_paths += %W(#{config.root}/lib)
+    
+    # render errors dynamically
+    config.exceptions_app = self.routes
+    
   end
 end
