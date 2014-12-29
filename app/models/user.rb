@@ -16,6 +16,10 @@ class User < ActiveRecord::Base
   # This is in addition to a real persisted field like 'username'
   attr_accessor :login
   
+  def to_param
+    username
+  end
+  
   def to_s
     self.username
   end
