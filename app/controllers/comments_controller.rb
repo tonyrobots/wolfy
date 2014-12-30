@@ -51,7 +51,7 @@ class CommentsController < ApplicationController
     end
   end
   
-  def create_no #this parses the message to use /w or /p for private/role messages
+  def create_not_in_use #this parses the message to use /w or /p for private/role messages
     respond_to do |format|
       if current_user
         @game = Game.find(params[:game_id])

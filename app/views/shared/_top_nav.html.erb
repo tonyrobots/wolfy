@@ -38,7 +38,7 @@
 		     	 <li><%= link_to game.name, game %></li>
 		 		<% end %>
 	  		  <% else %>
-			  <li><%= link_to '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> New Game'.html_safe, new_game_path %></li>
+			  <li><%= link_to content_tag(:span,"", :class => "glyphicon glyphicon-plus") +' New Game', new_game_path %></li>
 			  <% end %>
 		 	 </ul>
 		 </li>

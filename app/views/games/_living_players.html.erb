@@ -7,8 +7,8 @@
 					<%= render "games/action", {player: player, is_self:is_self} if current_player(@game).alive and not @game.state == "finished" %>
 				</td>
 				<td style="vertical-align:middle">
-					<%if is_self %><strong>
-						<span class="rest-in-place" data-url="<%= "/players/#{player.id}" %>" data-object="player" data-attribute="alias" data-placeholder="Enter a new alias">
+					<%if is_self and not @game.started? %><strong>
+						<span class="rest-in-place alias" id="<%= "alias-#{player.id}" %>" data-url="<%= "/players/#{player.id}" %>" data-object="player" data-attribute="alias" data-placeholder="Enter a new alias">
 						<%= player.alias %>
 					</span></strong>
 					<% else %>

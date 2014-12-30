@@ -7,14 +7,14 @@ namespace :debug do
     for player in game.players.living.non_villagers
       next if player.current_move
       if player.role == "seer"
-        player.reveal(game.players.living.shuffle.first)
+        player.reveal(game.players.living.where.not(id:player.id).shuffle.first)
       elsif player.role == "angel"
-        player.protect(game.players.living.shuffle.first)
+        player.protect(game.players.living.where.not(id:player.id).shuffle.first)
       elsif player.role == "werewolf"
         if wolfmove = game.moves.where(turn:game.turn).where(action:"attack").first
           player.attack(wolfmove.target)
         else
-          player.attack(game.players.living.shuffle.first)
+          player.attack(game.players.living.where.not(role:"werewolf").shuffle.first)
         end
       end
     end
@@ -26,8 +26,8 @@ namespace :debug do
     game_id = ENV['game_id'] || 1
     puts "Random votes for game #{game_id}..."
     game = Game.find(game_id)
-    votee = game.players.living.shuffle.last
     for player in game.players.living
+      votee = game.players.living.where.not(id:player.id).shuffle.last
       next if player.voted_for
       player.vote_for(votee)
       puts "#{player.alias} voted for #{votee.alias}"

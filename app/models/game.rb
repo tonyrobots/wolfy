@@ -129,13 +129,30 @@ class Game < ActiveRecord::Base
   
   def count_votes
     votes_needed = self.players.living.count / 2 + 1
-    #votes_needed = 2
-    puts "counting votes..."
-    # if player has majority of votes, he's out
-    most_votes = 0
-    #TODO if all players have voted, and one player (alone) has most votes, they are off
+    # if all players have voted, and one player (alone) has most votes, they are off
+    # TODO FINISH THIS! DRY IT UP! MAKE IT NICER!
+    # Possible strategy:
+    # add votes_counter to player model, sort by votes_counter, proceed accordingly
+    if votes.count == players.living.count #everyone has voted
+      votes_counts = self.votes.for_turn(self.turn).group(:votee_id).count
+      max = votes_counts.values.max
+      top_vote_getters = Hash[votes_counts.select { |k, v| v == max}]
+      if top_vote_getters.count == 1
+        Player.find(top_vote_getters.first[0]).lynch
+        end_turn
+        return
+      else
+        top_vote_getters.each do |id, count|
+          deadlocked_usernames << Player.find(id).username
+        end
+        self.add_message("Voting is deadlocked between players #{deadlocked_usernames}")
+      end
+    end
+  
+    # otherwise, if one player has more than half of the group voting against them, they are out
     for player in self.players.living
-      if player.votes_for.where(turn:self.turn).count >= votes_needed
+      votes_against = player.votes_for.for_turn(self.turn).count
+      if votes_against >= votes_needed
         player.lynch
         end_turn
         return
