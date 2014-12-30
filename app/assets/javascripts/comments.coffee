@@ -1,4 +1,6 @@
 window.client = new Faye.Client('/faye')
+boop = new Audio("/sounds/boop.mp3")
+
 
 client.addExtension {
   outgoing: (message, callback) ->
@@ -7,6 +9,7 @@ client.addExtension {
     callback(message)
 }
 
+#console.log(document.visibilityState);
 
 jQuery ->
   $('#new_comment').submit ->
@@ -26,8 +29,12 @@ jQuery ->
   client.subscribe gon.channel, (payload) ->
     $('#comments').find('.media-list').prepend(payload.message) if payload.message
   	 location.reload true if payload.reload
+    boop.play() if document.hidden #TODO play sound
 	 
   client.subscribe gon.private_channel, (payload) ->
     $('#comments').find('.media-list').prepend(payload.message) if payload.message
+    location.reload true if payload.reload
+    boop.play() if document.hidden #TODO play sound
+	 
 
 		
