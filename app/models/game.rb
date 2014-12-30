@@ -128,12 +128,11 @@ class Game < ActiveRecord::Base
   end
   
   def count_votes
+    #TODO: Refactor so all players/majority and 'more than half' voting is counted in one pass
     votes_needed = self.players.living.count / 2 + 1
     # if all players have voted, and one player (alone) has most votes, they are off
-    # TODO FINISH THIS! DRY IT UP! MAKE IT NICER!
-    # Possible strategy:
-    # add votes_counter to player model, sort by votes_counter, proceed accordingly
-    if votes.count == players.living.count #everyone has voted
+
+    if votes.for_turn(self.turn).count == players.living.count #everyone has voted      
       votes_counts = self.votes.for_turn(self.turn).group(:votee_id).count
       max = votes_counts.values.max
       top_vote_getters = Hash[votes_counts.select { |k, v| v == max}]
@@ -142,10 +141,11 @@ class Game < ActiveRecord::Base
         end_turn
         return
       else
+        deadlocked_players = []
         top_vote_getters.each do |id, count|
-          deadlocked_usernames << Player.find(id).username
+          deadlocked_players << Player.find(id).alias
         end
-        self.add_message("Voting is deadlocked between players #{deadlocked_usernames}")
+        self.add_message("Voting is deadlocked between #{deadlocked_players.to_sentence}.")
       end
     end
   

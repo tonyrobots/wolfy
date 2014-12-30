@@ -23,12 +23,13 @@ namespace :debug do
   
   task :vote => :environment do
     desc "random votes to help move things along"
+    force = ENV['force']
     game_id = ENV['game_id'] || 1
     puts "Random votes for game #{game_id}..."
     game = Game.find(game_id)
     for player in game.players.living
       votee = game.players.living.where.not(id:player.id).shuffle.last
-      next if player.voted_for
+      next if player.voted_for and not force
       player.vote_for(votee)
       puts "#{player.alias} voted for #{votee.alias}"
     end
