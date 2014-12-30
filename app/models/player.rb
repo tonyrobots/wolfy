@@ -27,9 +27,8 @@ class Player < ActiveRecord::Base
   end
   
   def readable_comments
-    @comments = self.game.comments.public + self.comments_to + self.comments.where.not(target_id:nil) + self.game.comments.where(target_role:self.role)
+    @comments = self.game.comments.openly_viewable + self.comments_to + self.comments.where.not(target_id:nil) + self.game.comments.where(target_role:self.role)
     @comments.uniq.sort_by(&:created_at).reverse
-    #@comments = self.game.comments.public.merge(self.comments_to)
   end
   
   def assign_role(role)

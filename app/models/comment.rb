@@ -4,7 +4,7 @@ class Comment < ActiveRecord::Base
   belongs_to :target, :class_name => 'Player', :foreign_key => 'target_id'
   validates :body, presence: true, length: {maximum: 2000}
   
-  scope :public, -> { where(target_id:nil).where(target_role:nil) }
+  scope :openly_viewable, -> { where(target_id:nil).where(target_role:nil) }
   
  
   def self.parse_comment(comment)
