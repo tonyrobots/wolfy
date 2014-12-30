@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   
   def current_player(game)
     if current_user
-      game.players.where(user_id:current_user.id).last
+      game.players.where(user_id:current_user.id).first
     end
   end
   helper_method :current_player
@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
   
   protected
   def validate_admin_user
-    unless user_signed_in? and current_user.admin 
+    unless user_signed_in? and current_user.is_admin?
       redirect_to root_path
     end
   end

@@ -47,4 +47,8 @@ class User < ActiveRecord::Base
       where(conditions).first
     end
   end
+  
+  def is_admin?
+    admin
+  end
 end
