@@ -33,6 +33,7 @@ gem 'faker'
 gem 'will_paginate'
 gem 'browser-timezone-rails'
 gem 'newrelic_rpm'
+gem 'figaro'
 
 # chat
 gem 'faye-rails'
