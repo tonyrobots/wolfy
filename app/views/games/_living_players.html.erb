@@ -22,7 +22,9 @@
 						<% if @game.is_over? %>
 							- <%= link_to player.user, player.user %>
 						<% end %>
-					<% end %><br />
+					<% end %>
+					<% if @game.is_day? and player.voted_for %> voted for <%= player.voted_for.alias %>. <% end %>
+					<br />
 					<% if @game.is_day? and player.votes_for.where(turn:@game.turn).count > 0 %>
 						<div class="voters">
 							Voted for by <%=  player.votes_for.where(turn:@game.turn).map { |vote| vote.voter.alias }.to_sentence %>.
