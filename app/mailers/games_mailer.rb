@@ -3,10 +3,10 @@ class GamesMailer < ActionMailer::Base
   
   def game_started(game)
     @game = game
-    for player in game.players
-      user = player.user
+    for @player in game.players
+      @user = @player.user
       # send
-      mail(to: user.email, subject: "Werewolf game \"#{@game.name}\" has begun!")
+      mail(to: @user.email, subject: "Werewolf game \"#{@game.name}\" has begun!")
     end
   end
 end

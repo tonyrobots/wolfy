@@ -57,7 +57,6 @@ end
 
 group :development do
   gem 'spring'
-  gem "thin"
   gem "letter_opener"
 end
 

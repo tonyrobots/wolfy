@@ -1,5 +1,5 @@
-Hi <%= user.username %> (or should I call you <%= player.alias %>?),
+Hi <%= @user.username %> (or should I call you <%= @player.alias %>?),
 
 The Werewolf game "<%= @game.name %>" has begun. Find out your role, and make your first move now!
 
-<%= button_to "View Game", @game %>
+<%= link_to "View Game", @game %>

@@ -15,10 +15,10 @@ User.create(email: "tonyzito+2@gmail.com", username:"tonyrobots", password: "cof
 puts "created tonyzito+2@gmail.com user"
 
 10.times do |i|
-  User.create(email: "email#{i}@test.com", username:"test#{i}", password: "test")
+  User.create(email: "tonyzito+test#{i}@gmail.com", username:"test#{i}", password: "test282")
 end
 
-game = Game.create(name: "New Game", creator_id: 1)
+game = Game.create(name: "Happy Birthday!", creator_id: 1)
 puts "created game: New Game"
 
 11.times do |i|
