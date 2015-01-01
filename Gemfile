@@ -35,7 +35,8 @@ gem 'browser-timezone-rails'
 gem 'newrelic_rpm'
 gem 'figaro'
 gem 'mandrill-api'
-
+gem 'roadie'         #for mailer email CSS/link pre-processing
+gem 'roadie-rails'
 
 # chat
 gem 'faye-rails'
@@ -54,7 +55,11 @@ group :doc do
   gem 'sdoc', require: false
 end
 
-gem 'spring', group: :development 
+group :development do
+  gem 'spring'
+  gem "letter_opener"
+end
+
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.1.2'
