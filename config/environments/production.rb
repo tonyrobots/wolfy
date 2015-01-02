@@ -3,6 +3,7 @@ Rails.application.configure do
   BASE_URL = "http://wolfy.herokuapp.com"
   
   config.action_mailer.default_url_options = { :host => 'wolfy.heroku.com' }
+  ActionMailer::Base.delivery_method = :smtp
 
   # Code is not reloaded between requests.
   config.cache_classes = true

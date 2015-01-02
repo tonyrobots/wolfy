@@ -1,5 +1,7 @@
-Hi <%= @user.username %> (or should I call you <%= @player.alias %>?),
+<h1>Werewolf Game "<%= link_to @game.name,game_url(id:@game.id)%>" has begun!</h1>
 
-The Werewolf game "<%= @game.name %>" has begun. Find out your role, and make your first move now!
+<p>Hi <%= @user.username %> (or should I call you <%= @player.alias %>?),</p>
 
-<%= link_to "View Game", @game %>
+<p>The Werewolf game "<%= @game.name %>" has begun. Find out your role, and make your first move now!</p>
+
+<%= link_to "View Game", game_url(id:@game.id), class:"btn btn-primary" %>

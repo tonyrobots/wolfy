@@ -38,7 +38,7 @@ class GamesController < ApplicationController
     if @game.ready_to_start?
       @game.start
       flash[:success] = "The game has begun!"
-      GamesMailer.game_started(@game)
+      GamesMailer.game_started(@game).deliver
     end
     redirect_to @game
   end

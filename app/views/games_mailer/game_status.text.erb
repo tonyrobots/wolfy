@@ -1,0 +1,31 @@
+Werewolf Update: <%= @game.name %>
+	
+Hi <%= @user.username %> (or should I call you <%= @player.alias %>?),
+
+Here's a update on your werewolf game:
+
+<% if @game.turn > 0 %>
+It is turn #<%= @game.turn %>, and it is <%= @game.state %>.
+<% elsif @game.turn == 0 %>
+The game has not yet started.
+<% else %>
+The game is over! 
+<% end %>
+<% if not @player.alive %>
+Sorry, but you are DEAD.
+<% end %>
+
+<% if @game.started? %>
+There are <%= @remaining_count.map  {|role, count| pluralize(count, role) }.to_sentence %> remaining.
+<% elsif not @game.ready_to_start? %>
+You need at least <%= @game.min_players - @game.players.count %> more players to start the game.
+<% end %>
+
+<% if @game.state == "finished" %>
+
+	The <%= @game.winner %> have won!
+	View Game Logs: <%= game_logs_url(@game) %>
+
+	<% end %>
+
+View Game: <%= game_url(id:@game.id) %>

@@ -1,5 +1,7 @@
 Werewolf::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
+  
+  # base url for faye server
   BASE_URL = "http://localhost:7777"
 
   # In the development environment your application's code is reloaded on
@@ -18,7 +20,7 @@ Werewolf::Application.configure do
   config.action_mailer.delivery_method = :letter_opener
   
   # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.raise_delivery_errors = true
 
   # Devise says to do this on dev:
   config.action_mailer.default_url_options = { :host => 'localhost:7777' }

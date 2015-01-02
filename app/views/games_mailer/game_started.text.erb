@@ -1,0 +1,5 @@
+Hi <%= @user.username %> (or should I call you <%= @player.alias %>?),
+
+The Werewolf game "<%= @game.name %>" has begun. Find out your role, and make your first move now!
+
+<%= link_to "View Game", game_url(id:@game.id) %>

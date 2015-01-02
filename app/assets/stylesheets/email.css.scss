@@ -1,0 +1,67 @@
+// Place all the styles related to the Mailer here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+@import url(http://fonts.googleapis.com/css?family=Raleway:700,400|Open+Sans:400,700);
+
+$font-family-sans-serif:  "Open Sans","Helvetica Neue", Helvetica, Arial, sans-serif !default;
+
+
+body {
+  color: #222222;
+  font-family: $font-family-sans-serif;
+}
+
+h1 {
+	color:#666666;
+	font-family: 'Raleway',$font-family-sans-serif;
+}
+
+a {
+	color:#4499dd;
+    text-decoration: none;
+}
+
+td {
+	padding-bottom: 1.5em;
+	padding-right: .75em;
+}
+
+hr {
+	color:#aaaaaa;
+	width:50%;
+    border: 0;
+    border-bottom: 1px dashed #cccccc;
+	padding:10px;
+}
+
+.center {
+	text-align: center;
+}
+
+.btn-primary {
+	color: white;
+	background-color: #337ab7;
+	border-color: #2e6da4;
+}
+
+.btn-info {
+	color: white;
+	background-color: #5bc0de;
+	border-color: #2e6da4;
+}
+
+.btn {
+	display: inline-block;
+	margin-bottom: 0;
+	font-weight: normal;
+	text-align: center;
+	vertical-align: middle;
+	cursor: pointer;
+	border: 1px solid transparent;
+	white-space: nowrap;
+	padding: 6px 12px;
+	font-size: 14px;
+	line-height: 1.428571429;
+	border-radius: 0px;
+}

@@ -1,0 +1,31 @@
+<h1>Werewolf Update: <%= link_to @game.name,game_url(id:@game.id)%></h1>
+	
+	<p>Hi <%= @user.username %> (or should I call you <%= @player.alias %>?),</p>
+<p>
+  <strong>
+	  <% if @game.turn > 0 %>
+	  Turn: <%= @game.turn %>.  It is <%= @game.state %>.
+	  <% elsif @game.turn == 0 %>
+	    Game has not yet started.
+	  <% else %>
+	    Game is over! 
+	  <% end %>
+	  <% if not @player.alive %>
+	  	You are DEAD.
+		<% end %>
+	</strong>
+	<% if @game.started? %><br />There are <%= @remaining_count.map  {|role, count| pluralize(count, role) }.to_sentence %> remaining.
+	<% elsif not @game.ready_to_start? %>
+	You need at least <%= @game.min_players - @game.players.count %> more players to start the game.
+	<% end %>
+	
+	<% if @game.state == "finished" %>
+		<div class="well well-lg">
+			<h3>The <%= @game.winner %> have won!</h3>
+			<%= link_to "View Game Logs", game_logs_url(@game), class:"btn btn-info" %>
+		</div>
+	<% end %>
+
+
+<%= link_to "View Game", game_url(id:@game.id), class:"btn btn-primary" %>
+</p>
