@@ -19,7 +19,6 @@
 	
 	<% if @game.state == "finished" %>
 			<h3>The game is over! Did you win?</h3>
-			<%= link_to "View Game Logs", game_logs_url(@game), class:"btn btn-info" %>
 	<% end %>
 
 
