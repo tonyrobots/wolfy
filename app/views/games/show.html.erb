@@ -39,7 +39,8 @@
 	You need at least <%= @game.min_players - @game.players.count %> more players to start the game.
 	<% end %>
 	
-		<div class="well well-lg game_status">
+		<div class="alert alert-info alert-dismissible game_status fade in" role="alert">
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			<% if @game.is_over? %>
 			<h3>The <%= @game.winner %> have won!</h3>
 			<%= link_to "View Game Logs", game_logs_path(@game), class:"btn btn-info" %>
