@@ -4,26 +4,22 @@
 <p>
   <strong>
 	  <% if @game.turn > 0 %>
-	  Turn: <%= @game.turn %>.  It is <%= @game.state %>.
+	  It's now turn #<%= @game.turn %>.  It is <%= @game.state %>.
 	  <% elsif @game.turn == 0 %>
-	    Game has not yet started.
+	    The game has not yet started.
 	  <% else %>
-	    Game is over! 
+	    The game is over! 
 	  <% end %>
 	  <% if not @player.alive %>
-	  	You are DEAD.
+	  	Sadly, you are DEAD.
 		<% end %>
 	</strong>
 	<% if @game.started? %><br />There are <%= @remaining_count.map  {|role, count| pluralize(count, role) }.to_sentence %> remaining.
-	<% elsif not @game.ready_to_start? %>
-	You need at least <%= @game.min_players - @game.players.count %> more players to start the game.
 	<% end %>
 	
 	<% if @game.state == "finished" %>
-		<div class="well well-lg">
-			<h3>The <%= @game.winner %> have won!</h3>
+			<h3>The game is over! Did you win?</h3>
 			<%= link_to "View Game Logs", game_logs_url(@game), class:"btn btn-info" %>
-		</div>
 	<% end %>
 
 
