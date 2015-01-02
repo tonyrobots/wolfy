@@ -39,12 +39,23 @@
 	You need at least <%= @game.min_players - @game.players.count %> more players to start the game.
 	<% end %>
 	
-	<% if @game.state == "finished" %>
-		<div class="well well-lg">
+		<div class="well well-lg game_status">
+			<% if @game.is_over? %>
 			<h3>The <%= @game.winner %> have won!</h3>
 			<%= link_to "View Game Logs", game_logs_path(@game), class:"btn btn-info" %>
+			<% elsif @game.turn == 0%>
+				<% if not @game.ready_to_start? %>
+			   	You need at least <%= @game.min_players - @game.players.count %> more players before the game can begin.
+				<% elsif @player == @game.creator %>
+					You can start the game at any time. An email will go out to all players.
+				<% else %>
+  					Waiting for <%=@game.creator.username%> to start the game.
+				<% end %>
+			<% else %>  
+				<%= @player.advice %>
+			<% end %>
 		</div>
-	<% end %>
+
 </p>
  </div>
 </div>

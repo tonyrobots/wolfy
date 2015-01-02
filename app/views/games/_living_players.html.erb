@@ -15,7 +15,7 @@
 					<!-- <button type="button" class="btn btn-default btn-xs pm-button" id="pm-<%=player.id%>" data="/p <%= player.alias%>">
 						<span class="glyphicon glyphicon-comment"></span> PM
 					</button> -->
-						<%= player.alias %> 
+						<strong><%= player.alias %>
 					<% end %>
 					<% if (@game.started? and (current_player(@game).knows_about? player or is_self) or @game.is_over?) %>
 						(<%= player.role %>)
@@ -23,6 +23,7 @@
 							- <%= link_to player.user, player.user %>
 						<% end %>
 					<% end %>
+					</strong>
 					<% if @game.is_day? and player.voted_for %> voted for <%= player.voted_for.alias %>. <% end %>
 					<br />
 					<% if @game.is_day? and player.votes_for.where(turn:@game.turn).count > 0 %>

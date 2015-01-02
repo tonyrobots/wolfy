@@ -1,21 +1,13 @@
 <h1>Werewolf Update: <%= link_to @game.name,game_url(id:@game.id)%></h1>
 	
 	<p>Hi <%= @user.username %> (or should I call you <%= @player.alias %>?),</p>
-<p>
-  <strong>
+	  
+	  <p>Here's a update on your werewolf game, <%= @game.name %>:</p>
+
 	  <% if @game.turn > 0 %>
-	  It's now turn #<%= @game.turn %>.  It is <%= @game.state %>.
-	  <% elsif @game.turn == 0 %>
-	    The game has not yet started.
-	  <% else %>
-	    The game is over! 
+	  <p>It's now turn #<%= @game.turn %> (<%= @game.state %>.)</p>
 	  <% end %>
-	  <% if not @player.alive %>
-	  	Sadly, you are DEAD.
-		<% end %>
-	</strong>
-	<% if @game.started? %><br />There are <%= @remaining_count.map  {|role, count| pluralize(count, role) }.to_sentence %> remaining.
-	<% end %>
+	  <p><%= @player.advice %></p>
 	
 	<% if @game.state == "finished" %>
 			<h3>The game is over! Did you win?</h3>

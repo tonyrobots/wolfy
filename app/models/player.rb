@@ -156,6 +156,32 @@ class Player < ActiveRecord::Base
     self.save!
   end
   
+  def advice
+    advice = ""
+    return if self.game.is_over?
+    if not self.alive 
+      return "You are dead. Finito. Kaput. Nothing for you to do now but hang back and see what happens."
+    end
+    if self.game.is_day?
+      advice += "It is day, so it's time to vote for someone to lynch. "
+      advice += "You have voted for #{self.voted_for.alias} already, but you can change your vote at any time. " if self.voted_for
+    elsif self.game.is_night?
+      case self.role
+      when "werewolf"
+        advice += "You are a werewolf! It is night, so you must decide whom to attack. You can also chat secretly with other werewolves to decide on a target by selecting 'werewolves' in the chat pulldown. "
+      when "seer"
+        advice += "You are a seer! That means you can reveal the role of another player each night. "
+      when "angel"
+        advice += "You are an angel! That means you can protect a player from wolves each night. You can even protect yourself, if you want. "
+      when "villager"
+        advice += "You are a just a lowly villager, so all you do at night is sleep. Go to sleep, villager, and hope you wake to see another day. "
+      end
+      advice += "You have selected #{current_move.target.alias}, but you can change your target at any time until the night ends. " if self.current_move
+      advice += "The night ends when all night moves have been submitted. "
+    end
+    advice
+  end
+  
   def record_stats(player_won, player_survived)
     @stats = self.user.stats || UserStats.new(user_id: self.user.id)
     @stats.played_count += 1

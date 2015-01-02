@@ -59,18 +59,18 @@ class GamesController < ApplicationController
   # GET /games/1
   # GET /games/1.json
   def show
-    player = current_player(@game)
+    @player = current_player(@game)
     @title = @game.name
-    @votee = player.voted_for
+    @votee = @player.voted_for
     @comment = Comment.new
-    @comments = player.readable_comments
-    if player.can_pm_to
-      @comment_targets = [["Everyone", nil]] + player.can_pm_to
+    @comments = @player.readable_comments
+    if @player.can_pm_to
+      @comment_targets = [["Everyone", nil]] + @player.can_pm_to
     end
     # all this sorting is to make sure there is no information passed by the order of roles presented in list:
     @remaining_count = @game.players.living.group(:role).count.sort.reverse.sort_by { |x| x[1] }.reverse
     gon.channel = "/channel-#{@game.id}"
-    gon.private_channel = "/channel-p-#{current_player(@game).id}"
+    gon.private_channel = "/channel-p-#{@player.id}"
   end
 
   # GET /games/new

@@ -1,4 +1,6 @@
 <h1>Everyone is waiting for you!</h1>
-<p>Hey <%= @player.alias%>, it's your move. The game can't move forward until you do, so hop to it, will ya?</p>
+<p>Hey <%= @player.alias%>, it's your move. </p>
+<p><%= @player.advice %></p>
+<p>The game can't move forward until you do, so hop to it, will ya?</p>
 <p><%= link_to "View Game", game_url(id:@game.id), class:"btn btn-primary" %>
 </p>

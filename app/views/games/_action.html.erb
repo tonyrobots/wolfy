@@ -1,7 +1,7 @@
 <%if @game.started? %>
 	<% if @game.is_day? %>
 		<% if player == current_player(@game) %>
-			* You *
+			<span class="glyphicon glyphicon-user large" style="margin-left:15px; color:red;margin-top:5px"></span>
 		<% else %>
 			<% if !@votee or @votee.id != player.id %>
 			<%= link_to "Vote", vote_path(votee_id:player.id), class:"btn-default btn vote", :remote => true  %>
