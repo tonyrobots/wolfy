@@ -16,7 +16,7 @@
 				<div class="center-block"><span class="glyphicon glyphicon-ok large" style="margin-left:15px; color:red;margin-top:5px"></span></div>
 			<%	elsif @player.role == "seer" and (current_player(@game).knows_about? player or is_self) %>
 			<% else %>
-			  <%= button_to move, move_path(move:move, target:player), class:"btn btn-#{move}" %>
+			  <%= button_to move, move_path(move:move, target:player), class:"btn btn-danger" %>
 			<% end %>
 		<% end %>
 	<% end %>
