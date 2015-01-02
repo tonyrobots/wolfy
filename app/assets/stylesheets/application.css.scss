@@ -26,6 +26,16 @@ $link-hover-decoration: underline;
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
+.day {
+	background-color:#00BFFF;
+	color:white;
+}
+
+.night {
+	background-color:#012e44;
+	color:white;
+	
+}
 .player {
 	padding: 5px;
 }
