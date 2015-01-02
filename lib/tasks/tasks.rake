@@ -21,8 +21,11 @@ task :nudge => :environment do
   for game in Game.current
     if game.waiting_for.count == 1
       player = game.waiting_for.first
-      puts "Nudging the straggler #{player.user.username}with an email."
-      GamesMailer.nudge(player).deliver
+      if player.last_nudged < 6.hours.ago 
+        puts "Nudging the straggler #{player.user.username} with an email."
+        GamesMailer.nudge(player).deliver
+        player.update(last_nudged: Time.now)
+      end
     end
   end
 end
