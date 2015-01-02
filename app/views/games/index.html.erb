@@ -30,30 +30,6 @@
 	</table>
 <% end %>
 
-<% if @recently_finished and @recently_finished.count > 0 %>
-	<h2>Your Recently Completed Games</h2>
-
-	<table class="table table-striped">
-	  <thead>
-	    <tr>
-	      <th>Name</th>
-	      <th>Game Ended</th>
-	      <th>Winner</th>
-	    </tr>
-	  </thead>
-
-	  <tbody>
-	    <% @recently_finished.each do |game| %>
-	      <tr>
-	        <td><h4><% if current_user.try(:is_playing?,game)%><%= link_to game.name, game %><% else %><%= game.name %><% end %></h4></td>
-	        <td><%=l game.updated_at %></td>
-	        <td><%= game.winner %></td>
-	      </tr>
-	    <% end %>
-	  </tbody>
-	</table>
-<% end %>
-
 <h2>Open Games</h2>
 <% if @open_games.count > 0 %>
 	<table class="table table-striped">
@@ -87,4 +63,31 @@
   There are no games available to join right now. Why don't you <%= link_to "create one?", new_game_path %>
 <% end %>
 <br>
+
+
+<% if @recently_finished and @recently_finished.count > 0 %>
+	<h2><% if current_user %>Your <% end %>Recently Completed Games</h2>
+
+	<table class="table table-striped">
+	  <thead>
+	    <tr>
+	      <th>Name</th>
+	      <th>Game Ended</th>
+	      <th>Winner</th>
+	    </tr>
+	  </thead>
+
+	  <tbody>
+	    <% @recently_finished.each do |game| %>
+	      <tr>
+	        <td><h4><% if current_user.try(:is_playing?,game)%><%= link_to game.name, game %><% else %><%= game.name %><% end %></h4></td>
+	        <td><%=l game.updated_at %></td>
+	        <td><%= game.winner %></td>
+	      </tr>
+	    <% end %>
+	  </tbody>
+	</table>
+<% end %>
+
+
 

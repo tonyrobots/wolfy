@@ -51,6 +51,8 @@ class GamesController < ApplicationController
     if current_user
       @recently_finished = current_user.games.where(state:"finished").where("games.updated_at > ?", 4.weeks.ago).order("games.updated_at DESC").limit(5)
       @user_games = current_user.current_games
+    else
+      @recently_finished = Game.where(state:"finished").where("games.updated_at > ?", 2.weeks.ago).order("games.updated_at DESC").limit(5)
     end
   end
 
