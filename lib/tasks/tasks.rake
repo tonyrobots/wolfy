@@ -16,3 +16,13 @@ task :email_game_status_to_all => :environment do
     GamesMailer.game_status(player).deliver
   end
 end
+
+task :nudge => :environment do
+  for game in Game.current
+    if game.waiting_for.count == 1
+      player = game.waiting_for.first
+      puts "Nudging the straggler #{player.user.username}with an email."
+      GamesMailer.nudge(player).deliver
+    end
+  end
+end

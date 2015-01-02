@@ -9,6 +9,8 @@ class Game < ActiveRecord::Base
   has_many :comments, dependent: :destroy
   has_many :moves, dependent: :destroy
   
+  scope :current, -> { where("turn > 0").where.not(state:"finished") }
+  
   def channel
     "/channel-#{self.id}"
   end
@@ -220,6 +222,22 @@ class Game < ActiveRecord::Base
         end
       end
     end
+  end
+  
+  def waiting_for
+    waiting_list = []
+    if is_day?
+      for player in self.players.living
+        next if player.voted_for
+        waiting_list << player
+      end
+    elsif is_night?
+      for player in self.players.living.non_villagers
+        next if player.current_move
+        waiting_list << player
+      end
+    end
+    waiting_list
   end
   
   def log_and_add_message(msg)
