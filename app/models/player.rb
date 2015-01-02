@@ -176,7 +176,6 @@ class Player < ActiveRecord::Base
       when "villager"
         advice += "You are a just a lowly villager, so all you do at night is sleep. Go to sleep, villager, and hope you wake to see another day. "
       end
-      advice += "You have selected #{current_move.target.alias}, but you can change your target at any time until the night ends. " if self.current_move
       advice += "The night ends when all night moves have been submitted. "
     end
     advice

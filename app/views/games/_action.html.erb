@@ -1,6 +1,6 @@
 <%if @game.started? %>
 	<% if @game.is_day? %>
-		<% if player == current_player(@game) %>
+		<% if player == @player %>
 			<span class="glyphicon glyphicon-user large" style="margin-left:15px; color:red;margin-top:5px"></span>
 		<% else %>
 			<% if !@votee or @votee.id != player.id %>
@@ -10,16 +10,16 @@
 			<% end %>
 		<% end %>
 	<% else # if it's night %>
-		<% unless current_player(@game).role == "villager" %>
-		   <% move = MOVES[current_player(@game).role] %>
-			<% if current_player(@game).try(:current_move).try(:target) == player %>
-				<%= "#{move}ing tonight"%>
-			<%	elsif current_player(@game).role == "seer" and (current_player(@game).knows_about? player or is_self) %>
+		<% unless @player.role == "villager" %>
+		   <% move = MOVES[@player.role] %>
+			<% if @player.try(:current_move).try(:target) == player %>
+				<div class="center-block"><span class="glyphicon glyphicon-ok large" style="margin-left:15px; color:red;margin-top:5px"></span></div>
+			<%	elsif @player.role == "seer" and (current_player(@game).knows_about? player or is_self) %>
 			<% else %>
 			  <%= button_to move, move_path(move:move, target:player), class:"btn btn-#{move}" %>
 			<% end %>
 		<% end %>
 	<% end %>
-<% elsif @game.turn == 0 and player == current_player(@game) %>
+<% elsif @game.turn == 0 and player == @player %>
 		<button class="edit-alias btn-standard btn">Change Alias</button>
 <% end %>

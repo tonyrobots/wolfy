@@ -53,9 +53,25 @@
   					Waiting for <%=@game.creator.username%> to start the game.
 				<% end %>
 			<% else %>  
-				<%= @player.advice %>
+				<p><%= @player.advice %></p>
 			<% end %>
 		</div>
+				<% if @player.current_move %>
+       		  	<p>You have selected <strong><%= @player.current_move.target.alias%></strong> to <%= MOVES[@player.role] %>, but you can change your target at any time until the night ends.</p>
+				<% end %>
+				<% if @player.role == "werewolf" and @game.role_count[:werewolf] > 1 %>
+					<% for wolf in @game.players.living.werewolves.where.not(id:@player.id) %>
+					   <% if wolf.current_move %>
+						 	<p>Fellow wolf <strong><%= wolf.alias %></strong> has <% if wolf.current_move.target == @player.current_move.target %>also <%end%> selected <strong><%= wolf.current_move.target.alias %></strong>. </p>
+								<% if wolf.current_move.target != @player.current_move.target %>
+								<p><i>Note: BOTH WOLVES MUST AGREE ON A TARGET FOR THE GAME TO PROCEED.</i></p>
+								<% end %>
+							
+						<% else %>
+							<p>Fellow wolf <strong><%= wolf.alias %></strong> hasn't selected a target yet.</p>
+						<% end %>	  
+					<% end %>
+				<% end %>
 
 </p>
  </div>

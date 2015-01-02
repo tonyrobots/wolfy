@@ -84,6 +84,24 @@ $link-hover-decoration: underline;
 	margin: 30px;
 }
 
+.btn-attack {
+   color: #FFFFFF;
+   background-color: #990000;
+   border-color: #012e44;
+}
+
+.btn-protect {
+    color: #FFF;
+    background-color: #5BC0DE;
+    border-color: #46B8DA;
+}
+
+.btn-reveal {
+    color: #FFF;
+    background-color: #5BC0DE;
+    border-color: #46B8DA;
+}
+
 /* User sign in and sign forms. */
 .border-form-div {
   max-width: 300px;
