@@ -4,17 +4,17 @@ Hi <%= @user.username %> (or should I call you <%= @player.alias %>?),
 
 Here's a update on your werewolf game, <%= @game.name %>:
 
-<% if @game.turn > 0 %>
+<% if @game.turn > 0 and not @game.is_over? %>
 It is turn #<%= @game.turn %>, and it is <%= @game.state %>.
 <%end%>
 
 <%= @player.advice %>
 
-<% if @game.state == "finished" %>
+<% if @game.is_over? %>
 
-	The <%= @game.winner %> have won!
-	View Game Logs: <%= game_logs_url(@game) %>
+The game is over! Did you win?
+	
+View Game Logs: <%= game_logs_url(@game) %>
 
-	<% end %>
-
+<% end %>
 View Game: <%= game_url(id:@game.id) %>

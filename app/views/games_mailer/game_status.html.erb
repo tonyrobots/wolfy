@@ -4,12 +4,12 @@
 	  
 	  <p>Here's a update on your werewolf game, <%= @game.name %>:</p>
 
-	  <% if @game.turn > 0 %>
+	  <% if @game.turn > 0 and not @game.is_over? %>
 	  <p>It's now turn #<%= @game.turn %> (<%= @game.state %>.)</p>
 	  <% end %>
 	  <p><%= @player.advice %></p>
 	
-	<% if @game.state == "finished" %>
+	<% if @game.is_over? %>
 			<h3>The game is over! Did you win?</h3>
 	<% end %>
 
