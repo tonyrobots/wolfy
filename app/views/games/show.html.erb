@@ -1,13 +1,13 @@
 <div class="game <%=@game.state %> row">
  <div class="col-xs-12">
-	
+
   <h2>
 	  <% if current_user_is_creator and not @game.started? %><span class="rest-in-place" data-url="<%= @game %>" data-object="game" data-attribute="name" data-placeholder="Rename this game"><%= @game.name %></span>
 	  <% else %>
     	<%= @game.name %>
 	  <% end %>
   </h2>
-	  <% unless @game.started? %> 
+	  <% unless @game.started? %>
 	  	<span class="<% if current_user_is_creator %>rest-in-place<%end%> game_description" data-url="<%= @game %>" data-object="game" data-attribute="description" data-formtype="textarea">
 			<%= @game.description%>
 		</span>
@@ -27,7 +27,7 @@
 	  <% elsif @game.turn == 0 %>
 	    Game has not yet started.
 	  <% else %>
-	    Game is over! 
+	    Game is over!
 	  <% end %>
 	  <% if not current_player(@game).alive %>
 	  	You are DEAD.
@@ -38,7 +38,7 @@
 	<% elsif not @game.ready_to_start? %>
 	You need at least <%= @game.min_players - @game.players.count %> more players to start the game.
 	<% end %>
-	
+
 		<div class="alert alert-info alert-dismissible game_status fade in" role="alert">
 			<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			<% if @game.is_over? %>
@@ -52,7 +52,7 @@
 				<% else %>
   					Waiting for <%=@game.creator.username%> to start the game.
 				<% end %>
-			<% else %>  
+			<% else %>
 				<p><%= @player.advice %></p>
 			<% end %>
 		</div>
@@ -62,14 +62,14 @@
 				<% if @player.role == "werewolf" and @game.role_count[:werewolf] > 1 %>
 					<% for wolf in @game.players.living.werewolves.where.not(id:@player.id) %>
 					   <% if wolf.current_move %>
-						 	<p>Fellow wolf <strong><%= wolf.alias %></strong> has <% if wolf.current_move.target == @player.current_move.target %>also <%end%> selected <strong><%= wolf.current_move.target.alias %></strong>. </p>
-								<% if wolf.current_move.target != @player.current_move.target %>
+						 	<p>Fellow wolf <strong><%= wolf.alias %></strong> has <% if @player.current_move and (wolf.current_move.target == @player.current_move.target) %>also <%end%> selected <strong><%= wolf.current_move.target.alias %></strong>. </p>
+								<% if @player.current_move and wolf.current_move.target != @player.current_move.target %>
 								<p><i>Note: BOTH WOLVES MUST AGREE ON A TARGET FOR THE GAME TO PROCEED.</i></p>
 								<% end %>
-							
+
 						<% else %>
 							<p>Fellow wolf <strong><%= wolf.alias %></strong> hasn't selected a target yet.</p>
-						<% end %>	  
+						<% end %>
 					<% end %>
 				<% end %>
 
@@ -91,10 +91,10 @@
 			<% end %>
 		<%end%>
 	</div>
-	<div class="col-md-6">	
+	<div class="col-md-6">
 		<h3>Chat:</h3>
 		 <div class="panel panel-default" id="comments">
-			 <%= render 'comments/form' %>  
+			 <%= render 'comments/form' %>
 		    <div class="panel-body scrollable">
 		      <ul class="media-list">
 		        <%= render @comments %>
