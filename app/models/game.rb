@@ -1,6 +1,6 @@
 class Game < ActiveRecord::Base
   include Broadcast
-  
+
   has_many :players, dependent: :destroy
   has_many :users, through: :players
   belongs_to :creator, :class_name => 'User', :foreign_key => 'creator_id'
@@ -8,13 +8,13 @@ class Game < ActiveRecord::Base
   has_many :votes, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :moves, dependent: :destroy
-  
+
   scope :current, -> { where("turn > 0").where.not(state:"finished") }
-  
+
   def channel
     "/channel-#{self.id}"
   end
-  
+
   def role_count
     # probably can DRY this
     {
@@ -24,7 +24,7 @@ class Game < ActiveRecord::Base
       villager: players.living.where(role:"villager").count
     }
   end
-  
+
   def advance_turn
    self.turn += 1
     if is_day?
@@ -39,9 +39,10 @@ class Game < ActiveRecord::Base
     self.save
     msg =  "It is now turn #{self.turn} (#{self.state})."
     log_and_add_message msg
+    send_status
     reload_clients
   end
-  
+
   def assign_roles
     # Should confirm correct conditions (e.g. turn ==0)?
     # update these counts later so they are based on @rules hash
@@ -52,7 +53,7 @@ class Game < ActiveRecord::Base
     werewolf_count = (players.count/4.6).round
     seer_count = (players.count/11.0).round
     angel_count = (players.count/13.0).round
-    
+
     # this is gross. make it nicer!
     self.players.shuffle.each_with_index do |player, index|
       if index < werewolf_count
@@ -66,7 +67,7 @@ class Game < ActiveRecord::Base
       end
     end
   end
-  
+
   def start
     unless self.started?
       msg = "Game \"#{self.name}\" has begun."
@@ -77,33 +78,33 @@ class Game < ActiveRecord::Base
       advance_turn
     end
   end
-  
+
   def started?
     turn > 0
   end
-  
+
   def min_players
     # later this will be based on game options, roles, etc.
     6
   end
-  
+
   def ready_to_start?
     self.players.count >= self.min_players and not self.started?
   end
-  
+
   def is_day?
     turn > 0 && ((turn % 2 == 0) == self.nightstart)
   end
-  
+
   def is_night?
     turn > 0 && ((turn % 2) == 0) != self.nightstart
   end
-  
+
   def is_over?
     self.state == "finished"
   end
-  
-  def end_turn    
+
+  def end_turn
     # check if victory conditions have been met
     werewolf_count = self.role_count[:werewolf]
     if werewolf_count == 0
@@ -117,7 +118,7 @@ class Game < ActiveRecord::Base
     end
     self.advance_turn
   end
-  
+
   def game_over(winners)
     msg = "The game is over! The #{winners} have won!"
     self.update(state:"finished", winner:winners)
@@ -128,13 +129,13 @@ class Game < ActiveRecord::Base
     log_and_add_message msg
     reload_clients
   end
-  
+
   def count_votes
     #TODO: Refactor so all players/majority and 'more than half' voting is counted in one pass
     votes_needed = self.players.living.count / 2 + 1
     # if all players have voted, and one player (alone) has most votes, they are off
 
-    if votes.for_turn(self.turn).count == players.living.count #everyone has voted      
+    if votes.for_turn(self.turn).count == players.living.count #everyone has voted
       votes_counts = self.votes.for_turn(self.turn).group(:votee_id).count
       max = votes_counts.values.max
       top_vote_getters = Hash[votes_counts.select { |k, v| v == max}]
@@ -150,7 +151,7 @@ class Game < ActiveRecord::Base
         self.add_message("Voting is deadlocked between #{deadlocked_players.to_sentence}.")
       end
     end
-  
+
     # otherwise, if one player has more than half of the group voting against them, they are out
     for player in self.players.living
       votes_against = player.votes_for.for_turn(self.turn).count
@@ -160,8 +161,8 @@ class Game < ActiveRecord::Base
         return
       end
     end
-  end 
-  
+  end
+
   def check_if_night_is_over
     for player in self.players.living.non_villagers
       if self.moves.where(turn:self.turn).where(player:player).first
@@ -185,7 +186,7 @@ class Game < ActiveRecord::Base
     evaluate_night_moves(prospective_target)
     self.end_turn
   end
-  
+
   def evaluate_night_moves(attack_target)
     # kills first
     if self.moves.where(turn:self.turn).where(action:"protect").pluck(:target_id).include? attack_target.id
@@ -211,7 +212,7 @@ class Game < ActiveRecord::Base
       move.player.private_message("You have seen that #{move.target.alias} is a #{move.target.role}.")
     end
   end
-  
+
   def set_initial_knowledge
     for player in self.players
       case player.role
@@ -223,7 +224,7 @@ class Game < ActiveRecord::Base
       end
     end
   end
-  
+
   def waiting_for
     waiting_list = []
     if is_day?
@@ -239,16 +240,16 @@ class Game < ActiveRecord::Base
     end
     waiting_list
   end
-  
+
   def log_and_add_message(msg)
     log_event msg
     add_message msg
   end
-  
+
   def log_event(text)
     EventLog.create(:game_id => self.id, :text => text, turn: self.turn)
   end
-  
+
   def add_message(msg, player=false)
     @comment = self.comments.build(game_id:self.id, body:msg)
     @comment.save
@@ -260,7 +261,7 @@ class Game < ActiveRecord::Base
     payload = { message: ApplicationController.new.render_to_string(@comment)}
     self.broadcast(channel, payload)
   end
-  
+
   def broadcast_to_role(role, msg, sender=false)
     for player in self.players.living
       if player.role == role
@@ -268,15 +269,21 @@ class Game < ActiveRecord::Base
       end
     end
   end
-  
+
   def broadcast_comment_to_role(comment, role)
     for player in self.players.living.where(role: role)
       player.private_send(comment)
     end
   end
-  
+
   def reload_clients
     broadcast "/channel-#{self.id}", {reload: true}
   end
-    
+
+  def send_status
+    players.each do |player|
+      GamesMailer.game_status(player).deliver
+    end
+  end
+
 end
