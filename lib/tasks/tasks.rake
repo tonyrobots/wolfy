@@ -19,7 +19,7 @@ end
 
 task :nudge => :environment do
   for game in Game.current
-    if game.waiting_for.count < 3
+    if game.waiting_for.count <= 3
       game.waiting_for.each  do |player|
         if player.last_nudged < 6.hours.ago
           puts "Nudging the straggler #{player.user.username} with an email."
