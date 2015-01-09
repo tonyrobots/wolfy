@@ -163,7 +163,7 @@ class Player < ActiveRecord::Base
       return "You are dead. Finito. Kaput. Nothing for you to do now but hang back and see what happens."
     end
     if self.game.is_day?
-      advice += "It is day, so it's time to vote for someone to lynch. "
+      advice += "It is day, so it's time to vote for someone to hang. "
       advice += "You have voted for #{self.voted_for.alias} already, but you can change your vote at any time. " if self.voted_for
     elsif self.game.is_night?
       case self.role
