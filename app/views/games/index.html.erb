@@ -52,9 +52,9 @@
 	        <td><%= game.players.count %></td>
 			  <td><%= link_to game.creator.username, game.creator %></td>
 			  <td><% unless current_user.try(:is_playing?,game)%>
-										<%= form_tag join_game_path(id:game.id) do %>
-											<%= text_field_tag :alias %>
-										  <%= submit_tag "Join Game", class:"btn btn-primary"  %>
+										<%= form_tag join_game_path(id:game.id), class:"form-inline" do %><div class="form-group">
+											<%= text_field_tag :alias, nil ,{id:"alias-#{game.id}", placeholder:"Your Alias", class:"form-control", size:14} %>
+										  <%= submit_tag "Join Game", class:"btn btn-primary form-control"  %></div>
 										<% end %>
 							<% end %>
 	            <% if current_user == game.creator %><%= link_to 'Edit', edit_game_path(game), class:"btn btn-default btn-sm"%><%end%>
