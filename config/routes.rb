@@ -3,22 +3,22 @@ Werewolf::Application.routes.draw do
   resources :games do
     resources :event_logs, :as => 'logs', :only=>[:index]
   end
-  get 'games/:id/join' => 'games#join', as: "join_game"
+  post 'games/:id/join' => 'games#join', as: "join_game"
   get 'games/:id/start' => 'games#start', as: "start_game"
   get 'games/:id/vote/:votee_id' => 'games#vote', as: "vote"
   post 'games/:id/move' => 'games#move', as: "move"
-  
+
   resources :comments, only: [:new, :create]
   devise_for :users
   resources :users
-  
+
   %w( 404 422 500 ).each do |code|
     get code, :to => "errors#show", :code => code
   end
-  
+
   root :to => "games#index"
-  
-  
+
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

@@ -1,5 +1,5 @@
 <h1>Werewolf <small>a game of murder & deception</h1>
-	
+
 <%= link_to 'Create a Game', new_game_path, class:"btn btn-primary pull-right" %>
 
 <%if @user_games and @user_games.count > 0 %>
@@ -12,7 +12,7 @@
 	      <th>Players</th>
 	      <th>Creator</th>
 	      <th>Turn</th>
-		
+
 
 	    </tr>
 	  </thead>
@@ -51,9 +51,14 @@
 			  </td>
 	        <td><%= game.players.count %></td>
 			  <td><%= link_to game.creator.username, game.creator %></td>
-			  <td><% unless current_user.try(:is_playing?,game)%><%= link_to "Join Game", join_game_path(:id => game.id), class:"btn btn-primary"%><% end %>
+			  <td><% unless current_user.try(:is_playing?,game)%>
+										<%= form_tag join_game_path(id:game.id) do %>
+											<%= text_field_tag :alias %>
+										  <%= submit_tag "Join Game", class:"btn btn-primary"  %>
+										<% end %>
+							<% end %>
 	            <% if current_user == game.creator %><%= link_to 'Edit', edit_game_path(game), class:"btn btn-default btn-sm"%><%end%>
-	        	   <% if current_user == game.creator %><%= link_to 'Delete', game, method: :delete, data: { confirm: 'Are you sure?' }, class:"btn btn-danger btn-sm" %><%end%>
+	        	  <% if current_user == game.creator %><%= link_to 'Delete', game, method: :delete, data: { confirm: 'Are you sure?' }, class:"btn btn-danger btn-sm" %><%end%>
 			  </td>
 	      </tr>
 	    <% end %>
@@ -88,6 +93,3 @@
 	  </tbody>
 	</table>
 <% end %>
-
-
-
