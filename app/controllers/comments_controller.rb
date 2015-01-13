@@ -11,7 +11,6 @@ class CommentsController < ApplicationController
         target_id = params[:target]
         body = comment_params[:body]
         if target_id == "admin" and current_user.is_admin?
-          sender = "Administrator"
           target_id = nil
           @comment = @game.comments.build(body: body,game_id:@game.id)
         else
