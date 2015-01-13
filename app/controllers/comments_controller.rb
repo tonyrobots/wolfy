@@ -6,16 +6,18 @@ class CommentsController < ApplicationController
 
   def create #this uses the target param for private/role messages
     respond_to do |format|
-      if params[:target] == "admin" and current_user.is_admin?
-        #admin broadcast
+      if current_user
         @game = Game.find(params[:game_id])
-        @game.add_message(comment_params[:body])
-      elsif current_user
-        @game = Game.find(params[:game_id])
-        sender = current_player(@game)
         target_id = params[:target]
         body = comment_params[:body]
-        @comment = sender.comments.build(body: body,game_id:@game.id)
+        if target_id == "admin" and current_user.is_admin?
+          sender = "Administrator"
+          target_id = nil
+          @comment = @game.comments.build(body: body,game_id:@game.id)
+        else
+          sender = current_player(@game)
+          @comment = sender.comments.build(body: body,game_id:@game.id)
+        end
         unless target_id.blank?
           # TODO generalize this to work with other roles
           if target_id == "werewolves"
