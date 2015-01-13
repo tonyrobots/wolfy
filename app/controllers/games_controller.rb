@@ -64,9 +64,7 @@ class GamesController < ApplicationController
     @votee = @player.voted_for
     @comment = Comment.new
     @comments = @player.readable_comments
-    if @player.can_pm_to
-      @comment_targets = [["Everyone", nil]] + @player.can_pm_to
-    end
+    @comment_targets =  @player.can_message_to
     if @player.user.is_admin?
       @comment_targets += [["Admin Broadcast","admin"]]
     end

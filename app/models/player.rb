@@ -119,11 +119,17 @@ class Player < ActiveRecord::Base
     end
   end
 
-  def can_pm_to
-    if self.role == "werewolf"
-      [["Werewolves", "werewolves"]]
-    elsif self.role == "seer"
-      self.game.players.living.pluck(:alias, :id)
+  def can_message_to
+    if self.alive
+      recipients = [["Everyone", nil]]
+      if self.role == "werewolf"
+        recipients += [["Werewolves", "werewolves"]]
+      elsif self.role == "seer"
+        recipients += self.game.players.living.pluck(:alias, :id)
+      end
+      recipients
+    else
+      []
     end
   end
 
