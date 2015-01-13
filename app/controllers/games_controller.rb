@@ -19,10 +19,11 @@ class GamesController < ApplicationController
       if params[:alias].present?
         player_alias = params[:alias].strip
       end
-      current_user.join(@game,player_alias)
+      success = current_user.join(@game,player_alias)
       @game.reload_clients
       respond_to do |format|
-        if @player.save
+        #TODO this is messed up. have a closer look.
+        if success
           format.html { redirect_to @game }
           format.json { render action: 'show', status: :created, location: @game }
         else
