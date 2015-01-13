@@ -6,7 +6,11 @@ class CommentsController < ApplicationController
 
   def create #this uses the target param for private/role messages
     respond_to do |format|
-      if current_user
+      if params[:target] == "admin" and current_user.is_admin?
+        #admin broadcast
+        @game = Game.find(params[:game_id])
+        @game.add_message(comment_params[:body])
+      elsif current_user
         @game = Game.find(params[:game_id])
         sender = current_player(@game)
         target_id = params[:target]
@@ -31,13 +35,13 @@ class CommentsController < ApplicationController
             format.html {redirect_to root_url}
             format.js
             return
-          end  
+          end
         end
-          
+
         if @comment.save
           # send a copy back to the sender (already sent to receiver)
           sender.private_send(@comment) if @private
-          
+
           @game.broadcast_comment_to_role(@comment, "werewolf") if @comment.target_role == "werewolf"
         else
           flash.now[:error] = 'Your comment cannot be saved.'
@@ -50,7 +54,7 @@ class CommentsController < ApplicationController
       end
     end
   end
-  
+
   def create_not_in_use #this parses the message to use /w or /p for private/role messages
     respond_to do |format|
       if current_user
@@ -101,7 +105,7 @@ class CommentsController < ApplicationController
   end
 
   private
-  
+
   def comment_params
     params.require(:comment).permit(:body,:target)
   end

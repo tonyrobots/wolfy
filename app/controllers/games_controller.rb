@@ -2,7 +2,7 @@ class GamesController < ApplicationController
   before_action :set_game, except: [:index, :new, :create]
   before_filter :authenticate_user!, except: [:index]
   before_filter :players_only, only:[:show]
-  
+
   def join
     # probably move some of this logic to model?
     if @game.turn > 0
@@ -32,7 +32,7 @@ class GamesController < ApplicationController
       end
     end
   end
-  
+
   def start
     # TODO message to user why the game can't start?
     if @game.ready_to_start?
@@ -67,6 +67,9 @@ class GamesController < ApplicationController
     if @player.can_pm_to
       @comment_targets = [["Everyone", nil]] + @player.can_pm_to
     end
+    if @player.user.is_admin?
+      @comment_targets += [["Admin Broadcast","admin"]]
+    end
     # all this sorting is to make sure there is no information passed by the order of roles presented in list:
     @remaining_count = @game.players.living.group(:role).count.sort.reverse.sort_by { |x| x[1] }.reverse
     gon.channel = "/channel-#{@game.id}"
@@ -81,7 +84,7 @@ class GamesController < ApplicationController
   # GET /games/1/edit
   def edit
   end
-  
+
   def vote
     if @game.started? and @game.is_day?
       @votee = Player.find(params[:votee_id])
@@ -126,15 +129,15 @@ class GamesController < ApplicationController
     @game.check_if_night_is_over
     redirect_to @game
   end
-    
-    
-    
+
+
+
   # POST /games
   # POST /games.json
   def create
     @game = Game.new(game_params)
     @game.creator_id = current_user.id
-    
+
     respond_to do |format|
       if @game.save
         current_user.join(@game)
@@ -178,12 +181,12 @@ class GamesController < ApplicationController
     def set_game
       @game = Game.find(params[:id])
     end
-        
+
     # Never trust parameters from the scary internet, only allow the white list through.
     def game_params
       params.require(:game).permit(:name, :turn, :state, :description)
     end
-    
+
     def players_only
       set_game
       unless current_user.is_playing?(@game)
