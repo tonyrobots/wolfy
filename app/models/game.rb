@@ -128,6 +128,7 @@ class Game < ActiveRecord::Base
     end
     log_and_add_message msg
     reload_clients
+    send_status
   end
 
   def count_votes
