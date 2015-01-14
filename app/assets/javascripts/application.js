@@ -19,4 +19,5 @@
 //= require faye
 //= require browser_timezone_rails/application.js
 //= require comments
+//= require twitter/bootstrap/rails/confirm
 //= require_tree .

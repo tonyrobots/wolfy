@@ -16,7 +16,7 @@
       <ul class="nav navbar-nav">
          <% if current_user%>
 				<li class="dropdown">
-			  	 <a href="#" class="dropdown" data-toggle="dropdown" role="button" aria-expanded="false">Your Current Games 
+			  	 <a href="#" class="dropdown" data-toggle="dropdown" role="button" aria-expanded="false">Your Current Games
 					 <span class="badge"><%= current_user.current_games.count%></span>
 				 </a>
           	 <ul class="dropdown-menu" role="menu">
@@ -29,13 +29,13 @@
 			 </li>
 			<% end %>
 			<li class="dropdown">
-		  	 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Open Games 
+		  	 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Open Games
 				 <span class="badge"><%= @open_games.count %></span>
 			 </a>
          	 <ul class="dropdown-menu" role="menu">
 	  		  <% if @open_games.count > 0 %>
 	  	 	  	<% for game in @open_games %>
-		     	 <li><%= link_to game.name, game %></li>
+		     	 <li><%= link_to game.name, join_game_path(id:game.id), method: :post, data: { confirm:"Are you sure you want to join this game? You can set your alias once you've joined.", confirm_title:"Join \"#{game.name}\" Game" } %></li>
 		 		<% end %>
 	  		  <% else %>
 			  <li><%= link_to content_tag(:span,"", :class => "glyphicon glyphicon-plus") +' New Game', new_game_path %></li>

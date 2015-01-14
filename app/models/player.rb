@@ -120,17 +120,15 @@ class Player < ActiveRecord::Base
   end
 
   def can_message_to
+    recipients = [["Everyone", nil]]
     if self.alive
-      recipients = [["Everyone", nil]]
       if self.role == "werewolf"
         recipients += [["Werewolves", "werewolves"]]
       elsif self.role == "seer"
         recipients += self.game.players.living.pluck(:alias, :id)
       end
-      recipients
-    else
-      []
     end
+    recipients
   end
 
   def current_move

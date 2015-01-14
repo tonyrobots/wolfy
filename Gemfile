@@ -46,6 +46,7 @@ gem 'gon'
 
 gem 'bootstrap-sass'
 gem 'autoprefixer-rails'
+gem 'twitter-bootstrap-rails-confirm'
 
 # edit in place
 gem 'rest_in_place'
