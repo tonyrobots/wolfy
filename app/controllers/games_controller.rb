@@ -61,7 +61,8 @@ class GamesController < ApplicationController
   # GET /games/1.json
   def show
     @player = current_player(@game)
-    @title = @game.name
+    @title = @og_title = @game.name
+    @og_description = @game.description
     @votee = @player.voted_for
     @comment = Comment.new
     @comments = @player.readable_comments
