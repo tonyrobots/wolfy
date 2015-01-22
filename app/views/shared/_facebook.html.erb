@@ -1,0 +1,12 @@
+<meta property="og:locale" content="en_US" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="<%=@og_title || "Werewolf! A game of murder and deception"%>" />
+<meta property="og:description" content="<%=@og_description || ""%>" />
+<%if @og_url%>
+	<meta property="og:url" content="<%=@og_url %>" />
+<% end %>
+<meta property="og:site_name" content="<%=@og_site_name || "Werewolf"%>" />
+
+<%if @og_image%>
+	<meta property="og:image" content="<%=@og_image%>" />
+<%end%>
